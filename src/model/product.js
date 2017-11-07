@@ -6,7 +6,7 @@ let ProductSchema = new Schema({
   time:{type:Date,default:Date.now},
   college:{type:String},
   pageView:{type:Number,default:0},
-  wishList:{type:Number,default:0},
+  wishList:{type:String},
   productDescription:{type:String,default:"N/A"},
   lastEdit:{Date},
   ratings:{type:Number,default:0},

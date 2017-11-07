@@ -33,6 +33,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                     newRequest.referenceLink=req.body.referenceLink;
                     newRequest.college=user.college;
                     newRequest.userId=user._id
+                    newRequest.lastEdit=Date();
                     newRequest.save((err,request)=>{
 
                         if(!err){
@@ -96,6 +97,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                     request.numberOfDays=req.body.numberOfDays;
                                     request.description=req.body.description;
                                     request.referenceLink=req.body.referenceLink;
+                                    request.lastEdit=Date();
                                     request.save((err,request)=>{
 
                                         if(!err){
