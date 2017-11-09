@@ -18,7 +18,7 @@ User.findOne({email:req.body.email},(err,user)=>{
             res.status(400).json({ message: 'User not found!' });
         }else{
 
-            if(user.password.equals(req.body.password)){  //password matching
+            if(user.password===req.body.password){  //password matching
                
         //checking if user is already logged in
         Login.findOne({email:req.body.email},(err,loginDetails)=>{
@@ -69,7 +69,7 @@ User.findOne({email:req.body.email},(err,user)=>{
             res.status(400).json({ message: 'User not found!' });
 
           }else{
-              if(login.token==req.body.token){
+              if(login.token===req.body.token){
             login.remove(function(err) {
                 if(err){
 

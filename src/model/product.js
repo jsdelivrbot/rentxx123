@@ -8,7 +8,7 @@ let ProductSchema = new Schema({
   pageView:{type:Number,default:0},
   wishList:{type:String},
   productDescription:{type:String,default:"N/A"},
-  lastEdit:{Date},
+  lastEdit:{type:Date,default:Date.now},
   ratings:{type:Number,default:0},
   numberOfRatings:{type:Number,default:0},
   daysGap:{type:Number,default:0},
@@ -16,7 +16,6 @@ let ProductSchema = new Schema({
   isAvailable:{type:Number,default:0},
   nextAvailable:{type:Number,default:0},
   rentPerAmount:{type:Number,default:0},
-  pageView:{type:Number,default:0},
   securityAmount:{type:Number,default:0},
   isSecurityAmount:{type:Number,default:0},
   facebookLink:{type:String,default:"N/A"},
@@ -42,9 +41,6 @@ let ProductSchema = new Schema({
   productApproved:{type:Number,default:0},
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
-
-  
-
 
 });
 

@@ -13,7 +13,7 @@ let RequestSchema = new Schema({
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
   userId:{ type: Schema.Types.ObjectId, ref:'user'},
-  lastEdit:{Date}
+  lastEdit:{type:Date,default:Date.now}
 
 });
 

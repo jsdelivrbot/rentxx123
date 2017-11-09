@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Router } from 'express';
 import User from '../model/user';
+import Login from '../model/login';
 import bodyParser from 'body-parser';
 
 export default({ config, db }) => {
@@ -79,28 +80,129 @@ User.find({},(err,results)=>{
           }
       });
     });
-    api.delete('/delete/:email',(req,res)=>{
-      User.findOne({email: req.params.email}, function(err, user) {
-        if(!err) {
-          if(user===null){
-            res.json({ message: 'User not found!' });
+    //deleting a user
+   //promoting as moderator
+   api.delete('/delete/:id',(req,res)=>{
+    //check password or match password
+    User.findById((req.params.id),(err,user)=>{
+      if(user==undefined){
+       res.status(400).json({ message: 'User not found!' });
+   }else{
+Login.findOne({email:req.body.email},(err,login)=>{
 
-          }else{
-            user.remove(function(err) {
-                if(err){
+   if(!err){
 
-                  res.send(err);
-                }
-                res.json({ message: 'User deleted successfully' });
-                
+       if(login==undefined){ //user not found
+
+           res.status(400).json({ message: 'User not Logged In!' });
+       }else{
+
+           if(login.token==req.body.token && login.userType==3){  //token matching
+           
+            user.remove((err)=>{
+
+              if(err){
+                res.status(500).send(err);
+              }else{
+
+
+                res.status(200).json({message:"user removed!"});
+              }
             });
+           }else{
+
+            res.status(400).send({message:"you are not authorized for moderation!"});
+           }
           }
         }else{
 
-          res.send(err);
+          res.status(500).send(err);
         }
-    });
+          });
+        }
+  });
+});
+    //promoting as moderator
+    api.put('/promote/:id',(req,res)=>{
+      //check password or match password
+      User.findById((req.params.id),(err,user)=>{
+        if(user==undefined){
+         res.status(400).json({ message: 'User not found!' });
+     }else{
+ Login.findOne({email:req.body.email},(err,login)=>{
+ 
+     if(!err){
+ 
+         if(login==undefined){ //user not found
+ 
+             res.status(400).json({ message: 'User not Logged In!' });
+         }else{
+ 
+             if(login.token==req.body.token && login.userType==3){  //token matching
+              user.userType=2;
+              user.save((err)=>{
 
-    })
+                if(err){
+                  res.status(500).send(err);
+                }else{
+
+
+                  res.status(200).json({message:"upgraded!"});
+                }
+              });
+             }else{
+
+              res.status(400).send({message:"you are not authorized for moderation!"});
+             }
+            }
+          }else{
+
+            res.status(500).send(err);
+          }
+            });
+          }
+    });
+  });
+   //promoting as moderator
+   api.put('/demote/:id',(req,res)=>{
+    //check password or match password
+    User.findById((req.params.id),(err,user)=>{
+      if(user==undefined){
+       res.status(400).json({ message: 'User not found!' });
+   }else{
+Login.findOne({email:req.body.email},(err,login)=>{
+
+   if(!err){
+
+       if(login==undefined){ //user not found
+
+           res.status(400).json({ message: 'User not Logged In!' });
+       }else{
+
+           if(login.token==req.body.token && login.userType==3){  //token matching
+            user.userType=0;
+            user.save((err)=>{
+
+              if(err){
+                res.status(500).send(err);
+              }else{
+
+
+                res.status(200).json({message:"demoted!"});
+              }
+            });
+           }else{
+
+            res.status(400).send({message:"you are not authorized for moderation!"});
+           }
+          }
+        }else{
+
+          res.status(500).send(err);
+        }
+          });
+        }
+  });
+});
   return api;
 }

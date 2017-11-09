@@ -4,6 +4,7 @@ import Login from '../model/login';
 import Product from '../model/product';
 import Review from '../model/review';
 import User from '../model/user';
+import Notification from '../model/notification';
 import bodyParser from 'body-parser';
 export default({ config, db }) => {
   let api = Router();
@@ -110,6 +111,12 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                     product.securityAmount=req.body.securityAmount;
                                     product.productAge=req.body.productAge;
                                     product.editTime=Date();
+                                    product.imageApproved=0;
+                                    product.linkApproved=0;
+                                    product.productApproved=0;
+                                    product.facebookLink=req.body.facebooklink;
+                                    product.youtubeLink=req.body.youtubelink;
+                                    product.twitterLink=req.body.twitterlink;
                                     product.save((err,product)=>{
 
                                         if(!err){
@@ -595,5 +602,461 @@ Login.findOne({email:req.params.email},(err,login)=>{
          }
                  });
        });
+
+
+       //approving product
+       api.put('/approveproduct/:id', (req, res) => {
+        //check token
+          User.findOne({email:req.body.email},(err,user)=>{
+            if(user==undefined){
+             res.status(400).json({ message: 'User not found!' });
+         }else{
+     Login.findOne({email:req.body.email},(err,login)=>{
+     
+         if(!err){
+     
+             if(login==undefined){ //user not found
+     
+                 res.status(400).json({ message: 'User not Logged In!' });
+             }else{
+     
+                if(login.token==req.body.token && user.userType>0){  //token matching
+                    Product.findOne({_id:req.params.id},(err,product)=>{
+    
+                       
+                            if(!err){
+                                    if(product===undefined){
+    
+                                        res.status(400).send({message:"no such product exsist"});
+                                    }else{
+                                
+                                      
+                                    product.productApproved=1;
+                                        product.save((err)=>{
+    
+                                            if(!err){
+                                                let newNotification=new Notification();
+                                                newNotification.userId=product.userId;
+                                                newNotification.message="Product Approved!"
+                                                newNotification.description=req.body.description;
+                                                newNotification.type=1;
+                                                newNotification.refId=product._id;
+                                                newNotification.link="/product";
+                                                newNotification.save();
+                                                res.status(200).send({message:"product approved!"});
+                                            }else{
+    
+                                                res.status(400).send({message:"some problem occured"});
+                                            }
+                                        
+                                        });
+    
+                                  
+                                        }
+    
+    
+                            }else{
+    
+                                res.status(400).send(err);
+                            }
+    
+                        
+                    });
+                        
+                        
+     
+     
+                 }else{
+                     res.status(400).json({ message: 'invalid token!' });
+     
+                 }
+           
+             }
+            
+         }else{
+     
+                 res.status(400).send(err);
+             }
+       
+     });
+         }
+                 });
+       });
+        //approving link
+        api.put('/approvelink/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.linkApproved=1;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+        
+                                                    res.status(200).send({message:"link  approved!"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
+           //approving  iamges
+        api.put('/approveimages/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.imageApproved=1;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+        
+                                                    res.status(200).send({message:"image approved!"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
+            //rejecting product
+       api.put('/rejectproduct/:id', (req, res) => {
+        //check token
+          User.findOne({email:req.body.email},(err,user)=>{
+            if(user==undefined){
+             res.status(400).json({ message: 'User not found!' });
+         }else{
+     Login.findOne({email:req.body.email},(err,login)=>{
+     
+         if(!err){
+     
+             if(login==undefined){ //user not found
+     
+                 res.status(400).json({ message: 'User not Logged In!' });
+             }else{
+     
+                if(login.token==req.body.token && user.userType>0){  //token matching
+                    Product.findOne({_id:req.params.id},(err,product)=>{
+    
+                       
+                            if(!err){
+                                    if(product===undefined){
+    
+                                        res.status(400).send({message:"no such product exsist"});
+                                    }else{
+                                
+                                      
+                                    product.productApproved=2;
+                                        product.save((err)=>{
+    
+                                            if(!err){
+                                                    let newNotification=new Notification();
+                                                    newNotification.userId=product.userId;
+                                                    newNotification.message="Product Rejected!"
+                                                    newNotification.description=req.body.description;
+                                                    newNotification.type=1;
+                                                    newNotification.refId=product._id;
+                                                    newNotification.link="/product";
+                                                    newNotification.save();
+                                                res.status(200).send({message:"product rejected!"});
+                                            }else{
+    
+                                                res.status(400).send({message:"some problem occured"});
+                                            }
+                                        
+                                        });
+    
+                                  
+                                        }
+    
+    
+                            }else{
+    
+                                res.status(400).send(err);
+                            }
+    
+                        
+                    });
+                        
+                        
+     
+     
+                 }else{
+                     res.status(400).json({ message: 'invalid token!' });
+     
+                 }
+           
+             }
+            
+         }else{
+     
+                 res.status(400).send(err);
+             }
+       
+     });
+         }
+                 });
+       });
+        //approving link
+        api.put('/rejectlink/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.linkApproved=2;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+                                                    let newNotification=new Notification();
+                                                    newNotification.userId=product.userId;
+                                                    newNotification.message="Link Rejected!"
+                                                    newNotification.description=req.body.description;
+                                                    newNotification.type=1;
+                                                    newNotification.refId=product._id;
+                                                    newNotification.link="/product";
+                                                    newNotification.save();
+                                                    res.status(200).send({message:"link  rejected!"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
+           //approving  iamges
+        api.put('/rejectimages/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.imageApproved=2;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+                                                    let newNotification=new Notification();
+                                                    newNotification.userId=product.userId;
+                                                    newNotification.message="Images Rejected!"
+                                                    newNotification.description=req.body.description;
+                                                    newNotification.type=1;
+                                                    newNotification.refId=product._id;
+                                                    newNotification.link="/product";
+                                                    newNotification.save();
+                                                    res.status(200).send({message:"image reject!"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
   return api;
 }
