@@ -4,7 +4,7 @@ let Schema = mongoose.Schema;
 let ProductSchema = new Schema({
   productName: String,
   time:{type:Date,default:Date.now},
-  college:{type:String},
+  college:{type:Schema.Types.ObjectId},
   pageView:{type:Number,default:0},
   wishList:{type:String},
   productDescription:{type:String,default:"N/A"},

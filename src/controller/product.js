@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
+import async from 'async';
 import { Router } from 'express';
 import Login from '../model/login';
 import Product from '../model/product';
 import Review from '../model/review';
 import User from '../model/user';
+import College from '../model/college';
 import Notification from '../model/notification';
 import bodyParser from 'body-parser';
 export default({ config, db }) => {
@@ -12,7 +14,7 @@ export default({ config, db }) => {
   // '/v1/product/add/emailID'
   api.post('/add/:email', (req, res) => {
    //check token
-   console.log("am here");
+
      User.findOne({email:req.params.email},(err,user)=>{
        if(user==undefined){
         res.status(400).json({ message: 'User not found!' });
@@ -45,6 +47,14 @@ Login.findOne({email:req.params.email},(err,login)=>{
                     newProduct.save((err,product)=>{
 
                         if(!err){
+                            let newNotification=new Notification();
+                            newNotification.userId=user._id;
+                            newNotification.message="Status Pending!"
+                            newNotification.description="You product "+product.productName+" is peding on approval by moderators will get back to you soon!";
+                            newNotification.type=1;
+                            newNotification.refId=user._id;
+                            newNotification.link="/product";
+                            newNotification.save();
                                 res.status(200).json(product);
 
                         }else{
@@ -1055,6 +1065,68 @@ Login.findOne({email:req.params.email},(err,login)=>{
                  }
            
          });
+             }
+                     });
+           });
+           //GET PRODUCTS BY COLLEGE
+           api.get('/productsbycollege/:token/:collegeId/:sortby/:page', (req, res) => {
+            //check token
+              Login.findOne({token:req.params.token},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not Login!' },);
+             }else{
+                 //checking correct college
+                College.findOne({email:req.params.collegeId},(err,user)=>{
+                    //checking correct sort if wrong sort by date
+                    let sort=["date","rating"];
+                    let sortby="date";
+                    if(sort.indexOf(req.params.sortby) > -1){
+
+                        sortby=req.params.sortby;
+                    }
+                    //checking if page number is correct
+                    let pageNumber=1
+            
+                    if(!isNaN(req.params.page)){
+                       pageNumber=req.params.page;
+                     }
+                     //async query start here
+                     console.log("query started");
+                     var countQuery = function(callback){
+                        Product.find({college:req.params.collegeId}, function(err, doc){
+                              if(err){ callback(err, null) }
+                              else{
+                                  callback(null, doc.length);
+                               }
+                        }
+                        )};
+                
+                   var retrieveQuery = function(callback){
+                       console.log((pageNumber-1)*12);
+                       Product.find({college:req.params.collegeId}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                        if(err){ callback(err, null) }
+                        else{
+                            callback(null, doc);
+                         }
+                  });
+                       
+                  };
+                
+                console.log(retrieveQuery);
+                   async.parallel([countQuery, retrieveQuery], function(err, results){
+                        //err contains the array of error of all the functions
+                        //results contains an array of all the results
+                        //results[0] will contain value of doc.length from countQuery function
+                        //results[1] will contain doc of retrieveQuery function
+                        //You can send the results as
+                       if(err){
+                       // console.log("error here");
+                        res.status(500).send(err);
+                       }else{
+                        res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                       }
+                   });
+                });
              }
                      });
            });

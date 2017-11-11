@@ -4,6 +4,7 @@ import Login from '../model/login';
 import Product from '../model/product';
 import Bid from '../model/bid';
 import User from '../model/user';
+import Notification from '../model/notification';
 import bodyParser from 'body-parser';
 export default({ config, db }) => {
   let api = Router();
@@ -43,7 +44,14 @@ export default({ config, db }) => {
                                     newBid.save((err,bid)=>{
 
                                         if(!err){
-
+                                            let newNotification=new Notification();
+                                            newNotification.userId=product.userId;
+                                            newNotification.message="Bid added!"
+                                            newNotification.description="You have recieved Bid on "+product.productName;
+                                            newNotification.type=3;
+                                            newNotification.refId=product._id;
+                                            newNotification.link="/product";
+                                            newNotification.save();
                                             res.status(200).send(bid);
                                         }else{
 

@@ -15,6 +15,7 @@ export default({ config, db }) => {
     newUser.lname = req.body.lname;
     newUser.email = req.body.email;
     newUser.password=req.body.password;
+    newUser.college=req.body.college;
     newUser.save(function(err) {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {

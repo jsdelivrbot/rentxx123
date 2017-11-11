@@ -9,7 +9,10 @@ import category from '../controller/category';
 import subCategory from '../controller/subCategory';
 import bid from '../controller/bid';
 import chat from '../controller/chat';
+import college from '../controller/college';
+import city from '../controller/city';
 import notification from '../controller/notification';
+import forgotpassword from '../controller/forgotpassword';
 import requests from '../controller/requests';
 
 let router = express();
@@ -32,12 +35,18 @@ initializeDb(db => {
     router.use('/category', category({ config, db }));
      //admin will add delete  fetch products by subcategory
      router.use('/subcategory', subCategory({ config, db }));
+      //admin will add delete  fetch products by college
+      router.use('/college', college({ config, db }));
+       //admin will add delete  fetch products by city
+       router.use('/city', city({ config, db }));
      //user will add delete update bid here
     router.use('/bid', bid({ config, db }));
     //user will add chat here
     router.use('/chat', chat({ config, db }));
     //user will notification here
     router.use('/notification', notification({ config, db }));
+    //user will change password here
+    router.use('/forgotpassword', forgotpassword({ config, db }));
 });
 
 export default router;
