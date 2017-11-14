@@ -230,8 +230,8 @@ Login.findOne({email:req.body.email},(err,login)=>{
  var transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-      user: 'toshikverma@gmail.com', // Your email id
-      pass: 'anu123anu' // Your password
+      user: 'toshiktest@gmail.com', // Your email id
+      pass: '123123123' // Your password
   }
 });
 var templateString = fs.readFileSync('views/welcome.ejs', 'utf-8');
