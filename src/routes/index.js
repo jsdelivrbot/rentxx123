@@ -1,4 +1,5 @@
 import express from 'express';
+import ejs from 'ejs';
 import config from '../config';
 import initializeDb from '../db';
 import middleware from '../middleware';

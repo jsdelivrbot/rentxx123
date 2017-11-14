@@ -19,7 +19,7 @@ User.findOne({email:req.body.email},(err,user)=>{
         }else{
 
             if(user.password===req.body.password){  //password matching
-               
+               if(user.emailverified==1){
         //checking if user is already logged in
         Login.findOne({email:req.body.email},(err,loginDetails)=>{
 
@@ -36,7 +36,7 @@ User.findOne({email:req.body.email},(err,user)=>{
                             res.status(500).send(err);
                         }
 
-                        res.status(200).json({token:loginDetailsAfterSaving.token});
+                        res.status(200).json({token:loginDetailsAfterSaving.token,userdetails:user});
                     });
 
                 }else{  //user is already logged in
@@ -48,10 +48,13 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                 res.status(500).send(err);
             }
-
+        
 
         });
+    }else{
+        res.status(400).json({ message: 'user not verified!' });
 
+    }
             }else{
                 res.status(400).json({ message: 'invalid password!' });
 

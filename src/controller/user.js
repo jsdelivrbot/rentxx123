@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
+import ejs from 'ejs';
+import path from 'path';
+import fs from 'fs';
 import { Router } from 'express';
 import User from '../model/user';
 import Login from '../model/login';
@@ -16,7 +20,8 @@ export default({ config, db }) => {
     newUser.email = req.body.email;
     newUser.password=req.body.password;
     newUser.college=req.body.college;
-    newUser.save(function(err) {
+    newUser.city=req.body.city;
+    newUser.save(function(err,user) {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate email
@@ -26,36 +31,41 @@ export default({ config, db }) => {
         // Some other error
         return res.status(500).send(err);
       }
+      //sending mail 
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+      user: 'toshikverma@gmail.com', // Your email id
+      pass: 'anu123anu' // Your password
+  }
+});
+var templateString = fs.readFileSync('views/verify.ejs', 'utf-8');
+let vaerificationAddress=config.myurl+"user/verify/"+user.emailverificationkey+"/"+user.email
+console.log(path.join(__dirname,'/views/welcome.ejs'));
+var mailOptions = {
+  from: 'toshikverma@gmail.com', // sender address
+  to: user.email, // list of receivers
+  subject: 'Verification Email', // Subject line
+  html: ejs.render(templateString,{heading:"Verification Email",name:user.fname,link:vaerificationAddress},(err)=>{
+    if(err){
+      console.log(err);
+    }
+  }) 
+  // html: ejs.renderFile(path.join(__dirname,'/views/welcome.ejs'),{heading:"Verification Email",body:"test body"}) //, // plaintext body
+  // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+};
+transporter.sendMail(mailOptions, function (err, info) {
+  if(err)
+    //console.log(err)
+    console.trace("Here I am!")
+  else
+    console.log(info);
+});
+//sending mail ends
       res.json({ message: 'User saved successfully' });
     });
   });
-  //finding all users
-  api.get('/',(req,res)=>{
-User.find({},(err,results)=>{
-
-  if(err){
-
-    res.send(err);
-
-        }
-  res.json(results);
-    });
-
-       });
-
-       //find a user by email
-       api.get('/:email',(req,res)=>{
-        User.find({email:req.params.email},(err,results)=>{
-        
-          if(err){
-        
-            res.send(err);
-        
-                }
-          res.json(results);
-            });
-        
-               });
+  
        //updating user
        api.put('/update/:email',(req,res)=>{
         User.findOne({email: req.params.email}, function(err, user) {
@@ -66,7 +76,7 @@ User.find({},(err,results)=>{
             }else{
               user.fname=req.body.fname;
               user.lname=req.body.lname;
-              user.save(function(err) {
+              user.save(function(err,user) {
                   if(err){
 
                     res.send(err);
@@ -82,7 +92,6 @@ User.find({},(err,results)=>{
       });
     });
     //deleting a user
-   //promoting as moderator
    api.delete('/delete/:id',(req,res)=>{
     //check password or match password
     User.findById((req.params.id),(err,user)=>{
@@ -164,7 +173,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
           }
     });
   });
-   //promoting as moderator
+   //demoting as moderator
    api.put('/demote/:id',(req,res)=>{
     //check password or match password
     User.findById((req.params.id),(err,user)=>{
@@ -204,6 +213,66 @@ Login.findOne({email:req.body.email},(err,login)=>{
           });
         }
   });
+});
+ //updating user
+ api.get('/verify/:key/:email',(req,res)=>{
+  User.findOne({email: req.params.email}, function(err, user) {
+    if(!err) {
+      if(user===null){
+        res.status(400).json({ message: 'User not found!' });
+
+      }else{
+       if(user.emailverificationkey===req.params.key){
+          user.emailverified=1;
+          user.save((err)=>{
+            if(!err){
+ //sending mail 
+ var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+      user: 'toshikverma@gmail.com', // Your email id
+      pass: 'anu123anu' // Your password
+  }
+});
+var templateString = fs.readFileSync('views/welcome.ejs', 'utf-8');
+var mailOptions = {
+  from: 'toshikverma@gmail.com', // sender address
+  to: user.email, // list of receivers
+  subject: 'Email Verified!', // Subject line
+  html: ejs.render(templateString,{heading:"Welcome Email verified!",name:user.fname},(err)=>{
+    if(err){
+      console.log(err);
+    }
+  }) 
+  // html: ejs.renderFile(path.join(__dirname,'/views/welcome.ejs'),{heading:"Verification Email",body:"test body"}) //, // plaintext body
+  // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+};
+transporter.sendMail(mailOptions, function (err, info) {
+  if(err)
+    //console.log(err)
+    console.trace("Here I am!")
+  else
+    console.log(info);
+});
+//sending mail ends
+              res.status(200).json({message:"user verified!"});
+            }else{
+
+              res.status(500).send(err);
+            }
+
+          });
+
+       }else{
+        res.status(400).json({ message: 'invalid verification key' });
+
+       }
+      }
+    }else{
+
+      res.send(err);
+    }
+});
 });
   return api;
 }

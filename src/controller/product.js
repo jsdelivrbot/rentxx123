@@ -6,6 +6,7 @@ import Product from '../model/product';
 import Review from '../model/review';
 import User from '../model/user';
 import College from '../model/college';
+import Category from '../model/category';
 import Notification from '../model/notification';
 import bodyParser from 'body-parser';
 export default({ config, db }) => {
@@ -1130,5 +1131,115 @@ Login.findOne({email:req.params.email},(err,login)=>{
              }
                      });
            });
+           //GET PRODUCTS BY CATEGORY
+           api.get('/productsbycategory/:token/:category/:sortby/:page', (req, res) => {
+            //check token
+              Login.findOne({token:req.params.token},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not Login!' },);
+             }else{
+                 //checking correct category
+                Category.findOne({_id:req.params.category},(err,user)=>{
+                    //checking correct sort if wrong sort by date
+                    let sort=["date","rating"];
+                    let sortby="date";
+                    if(sort.indexOf(req.params.sortby) > -1){
+
+                        sortby=req.params.sortby;
+                    }
+                    //checking if page number is correct
+                    let pageNumber=1
+            
+                    if(!isNaN(req.params.page)){
+                       pageNumber=req.params.page;
+                     }
+                     //async query start here
+                     console.log("query started");
+                     var countQuery = function(callback){
+                        Product.find({category:req.params.category}, function(err, doc){
+                              if(err){ callback(err, null) }
+                              else{
+                                  callback(null, doc.length);
+                               }
+                        }
+                        )};
+                
+                   var retrieveQuery = function(callback){
+                       console.log((pageNumber-1)*12);
+                       Product.find({category:req.params.category}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                        if(err){ callback(err, null) }
+                        else{
+                            callback(null, doc);
+                         }
+                  });
+                       
+                  };
+                
+                console.log(retrieveQuery);
+                   async.parallel([countQuery, retrieveQuery], function(err, results){
+                       if(err){
+                       // console.log("error here");
+                        res.status(500).send(err);
+                       }else{
+                        res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                       }
+                   });
+                });
+             }
+                     });
+           });
+    //GET PRODUCTS BY DYNAMIC QUERY
+    api.get('/dynamic/:token/:query/:sortby/:page', (req, res) => {
+        //check token
+          Login.findOne({token:req.params.token},(err,user)=>{
+            if(user==undefined){
+             res.status(400).json({ message: 'User not Login!' },);
+         }else{
+                let sort=["date","rating"];
+                let sortby="date";
+                if(sort.indexOf(req.params.sortby) > -1){
+
+                    sortby=req.params.sortby;
+                }
+                //checking if page number is correct
+                let pageNumber=1
+        
+                if(!isNaN(req.params.page)){
+                   pageNumber=req.params.page;
+                 }
+                 //async query start here
+                 
+                 let qry=JSON.parse(decodeURIComponent(req.params.query));
+                 var countQuery = function(callback){
+                    Product.find(qry, function(err, doc){
+                          if(err){ callback(err, null) }
+                          else{
+                              callback(null, doc.length);
+                           }
+                    }
+                    )};
+            
+               var retrieveQuery = function(callback){
+                   Product.find(qry).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                    if(err){ callback(err, null) }
+                    else{
+                        callback(null, doc);
+                     }
+              });
+                   
+              };
+            
+               async.parallel([countQuery, retrieveQuery], function(err, results){
+                   if(err){
+                   // console.log("error here");
+                    res.status(500).send(err);
+                   }else{
+                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                   }
+               });
+            
+         }
+                 });
+       });       
   return api;
 }

@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import config from './config';
 import routes from './routes';
+import path from 'path';
 
 let app = express();
 app.server = http.createServer(app);
@@ -17,6 +18,9 @@ app.use(bodyParser.json({
 // passport config
 
 // api routes v1
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine','ejs');
+app.use('/assets',express.static(__dirname+'/public'));
 app.use('/v1', routes);
 
 app.server.listen(config.port);

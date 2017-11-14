@@ -41,6 +41,9 @@ let ProductSchema = new Schema({
   productApproved:{type:Number,default:0},
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
+  category:{type:Schema.Types.ObjectId},
+  subCategory:{type:Schema.Types.ObjectId},
+  emailverified:{type:Number,default:0}
 
 });
 

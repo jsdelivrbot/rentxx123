@@ -27,6 +27,7 @@ export default({ config, db }) => {
              if(login.token==req.body.token && user.userType>0){  //token matching and only admin can add
                let newcollege=new College();
                newcollege.name=req.body.name;
+               newcollege.city=req.body.city;
                newcollege.save((err)=>{
 
                 if(!err){
@@ -84,6 +85,7 @@ export default({ config, db }) => {
 
                         }else{
                         college.name=req.body.name;
+                        college.city=req.body.city;
                         college.save((err)=>{
 
                             if(err){
