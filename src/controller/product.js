@@ -5,6 +5,9 @@ import Login from '../model/login';
 import Product from '../model/product';
 import Review from '../model/review';
 import User from '../model/user';
+import nodemailer from 'nodemailer';
+import fs from 'fs';
+import ejs from 'ejs';
 import College from '../model/college';
 import Category from '../model/category';
 import Notification from '../model/notification';
@@ -38,6 +41,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                    newProduct.ProductDescription=req.body.description;
                    newProduct.referenceLink=req.body.referenceLink;
                    newProduct.college=user.college;
+                   newProduct.city=user.city;
                     newProduct.userId=user._id,
                     newProduct.rentPerAmount=req.body.rentPerAmount,
                     newProduct.condition=req.body.condition,
@@ -55,6 +59,35 @@ Login.findOne({email:req.params.email},(err,login)=>{
                             newNotification.type=1;
                             newNotification.refId=user._id;
                             newNotification.link="/product";
+                            //sending mail 
+                            var transporter = nodemailer.createTransport({
+                              service: 'Gmail',
+                              auth: {
+                              user: 'toshikverma1@gmail.com', // Your email id
+                              pass: '123123123a' // Your password
+                              }
+                          });
+                          var templateString = fs.readFileSync('views/approvals.ejs', 'utf-8');
+                          var mailOptions = {
+                              from: 'toshikverma@gmail.com', // sender address
+                              to: user.email, // list of receivers
+                              subject: 'Product Saved', // Subject line
+                              html: ejs.render(templateString,{heading:"pending approval",name:user.fname,message:"Your Product is upload and pending approval!",productName:req.body.productName},(err)=>{
+                              if(err){
+                                  console.log(err);
+                              }
+                              }) 
+                              
+                          };
+                          transporter.sendMail(mailOptions, function (err, info) {
+                              if(err)
+                              console.log(err)
+                              
+                              else
+                              console.log(info);
+                          });
+                          //sending mail ends
+                                                                                                                            
                             newNotification.save();
                                 res.status(200).json(product);
 
@@ -614,7 +647,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                  });
        });
 
-
+       //approvals starts here!
        //approving product
        api.put('/approveproduct/:id', (req, res) => {
         //check token
@@ -653,6 +686,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                 newNotification.type=1;
                                                 newNotification.refId=product._id;
                                                 newNotification.link="/product";
+                                                User.findById((product.userId),(err,ownerUser)=>{
+                                                    
+                                                                                                    if(!err){
+                                                //sending mail 
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+        user: 'toshikverma1@gmail.com', // Your email id
+        pass: '123123123a' // Your password
+        }
+    });
+    var templateString = fs.readFileSync('views/approvals.ejs', 'utf-8');
+    var mailOptions = {
+        from: 'toshikverma@gmail.com', // sender address
+        to: ownerUser.email, // list of receivers
+        subject: 'Approvals', // Subject line
+        html: ejs.render(templateString,{heading:"Accepted",name:ownerUser.fname,message:"Your Product is Approved!",productName:product.productName},(err)=>{
+        if(err){
+            console.log(err);
+        }
+        }) 
+        
+    };
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err)
+        console.log(err)
+        
+        else
+        console.log(info);
+    });
+    //sending mail ends
+                                                                                                    }});    
                                                 newNotification.save();
                                                 res.status(200).send({message:"product approved!"});
                                             }else{
@@ -873,6 +938,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                     newNotification.type=1;
                                                     newNotification.refId=product._id;
                                                     newNotification.link="/product";
+                                                    User.findById((product.userId),(err,ownerUser)=>{
+                                                        
+                                                                                                        if(!err){
+                                                    //sending mail 
+          var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+            user: 'toshikverma1@gmail.com', // Your email id
+            pass: '123123123a' // Your password
+            }
+        });
+        var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+        var mailOptions = {
+            from: 'toshikverma@gmail.com', // sender address
+            to: ownerUser.email, // list of receivers
+            subject: 'Approvals', // Subject line
+            html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your Product is Rejected!",productName:product.productName,reason:req.body.description},(err)=>{
+            if(err){
+                console.log(err);
+            }
+            }) 
+            
+        };
+        transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+            console.log(err)
+            
+            else
+            console.log(info);
+        });
+        //sending mail ends
+                                                                                                        }});      
                                                     newNotification.save();
                                                 res.status(200).send({message:"product rejected!"});
                                             }else{
@@ -951,6 +1048,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                     newNotification.type=1;
                                                     newNotification.refId=product._id;
                                                     newNotification.link="/product";
+                                                    User.findById((product.userId),(err,ownerUser)=>{
+                                                        
+                                                                                                        if(!err){
+                                                    //sending mail 
+          var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+            user: 'toshikverma1@gmail.com', // Your email id
+            pass: '123123123a' // Your password
+            }
+        });
+        var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+        var mailOptions = {
+            from: 'toshikverma@gmail.com', // sender address
+            to: ownerUser.email, // list of receivers
+            subject: 'Approvals', // Subject line
+            html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your Link is Rejected!",productName:product.productName,reason:req.body.description},(err)=>{
+            if(err){
+                console.log(err);
+            }
+            }) 
+            
+        };
+        transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+            console.log(err)
+            
+            else
+            console.log(info);
+        });
+        //sending mail ends
+                                                                                                        }});      
                                                     newNotification.save();
                                                     res.status(200).send({message:"link  rejected!"});
                                                 }else{
@@ -1029,6 +1158,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                     newNotification.type=1;
                                                     newNotification.refId=product._id;
                                                     newNotification.link="/product";
+                                                    User.findById((product.userId),(err,ownerUser)=>{
+                                                        
+                                                                                                        if(!err){
+                                                    //sending mail 
+          var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+            user: 'toshikverma1@gmail.com', // Your email id
+            pass: '123123123a' // Your password
+            }
+        });
+        var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+        var mailOptions = {
+            from: 'toshikverma@gmail.com', // sender address
+            to: ownerUser.email, // list of receivers
+            subject: 'Approvals', // Subject line
+            html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your Images is Rejected!",productName:product.productName,reason:req.body.description},(err)=>{
+            if(err){
+                console.log(err);
+            }
+            }) 
+            
+        };
+        transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+            console.log(err)
+            
+            else
+            console.log(info);
+        });
+        //sending mail ends
+                                                                                                        }});      
                                                     newNotification.save();
                                                     res.status(200).send({message:"image reject!"});
                                                 }else{
@@ -1221,6 +1382,53 @@ Login.findOne({email:req.params.email},(err,login)=>{
             
                var retrieveQuery = function(callback){
                    Product.find(qry).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                    if(err){ callback(err, null) }
+                    else{
+                        callback(null, doc);
+                     }
+              });
+                   
+              };
+            
+               async.parallel([countQuery, retrieveQuery], function(err, results){
+                   if(err){
+                   // console.log("error here");
+                    res.status(500).send(err);
+                   }else{
+                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                   }
+               });
+            
+         }
+                 });
+       });       
+
+       //GET PRODUCTS BY SEARCH QUERY
+    api.get('/search/:token/:search/:page', (req, res) => {
+        //check token
+          Login.findOne({token:req.params.token},(err,user)=>{
+            if(user==undefined){
+             res.status(400).json({ message: 'User not Login!' },);
+         }else{
+                
+                //checking if page number is correct
+                let pageNumber=1
+        
+                if(!isNaN(req.params.page)){
+                   pageNumber=req.params.page;
+                 }
+                 //async query start here
+                 var countQuery = function(callback){
+                    Product.find({productName: new RegExp(req.params.search,"i")}, function(err, doc){
+                          if(err){ callback(err, null) }
+                          else{
+                              callback(null, doc.length);
+                           }
+                    }
+                    )};
+            
+               var retrieveQuery = function(callback){
+                   Product.find({productName: new RegExp(req.params.search,"i")}).skip((pageNumber-1)*12).limit(12).exec(function(err, doc){
                     if(err){ callback(err, null) }
                     else{
                         callback(null, doc);

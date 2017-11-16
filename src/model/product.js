@@ -5,6 +5,7 @@ let ProductSchema = new Schema({
   productName: String,
   time:{type:Date,default:Date.now},
   college:{type:Schema.Types.ObjectId},
+  city:{type:Schema.Types.ObjectId},
   pageView:{type:Number,default:0},
   wishList:{type:String},
   productDescription:{type:String,default:"N/A"},
@@ -42,8 +43,7 @@ let ProductSchema = new Schema({
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
   category:{type:Schema.Types.ObjectId},
-  subCategory:{type:Schema.Types.ObjectId},
-  emailverified:{type:Number,default:0}
+  subCategory:{type:Schema.Types.ObjectId}
 
 });
 

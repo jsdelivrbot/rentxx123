@@ -4,6 +4,10 @@ import Login from '../model/login';
 import Requests from '../model/requests';
 import User from '../model/user';
 import bodyParser from 'body-parser';
+import nodemailer from 'nodemailer';
+import fs from 'fs';
+import ejs from 'ejs';
+import async from 'async';
 import Notification from '../model/notification';
 export default({ config, db }) => {
   let api = Router();
@@ -33,6 +37,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                     newRequest.description=req.body.description;
                     newRequest.referenceLink=req.body.referenceLink;
                     newRequest.college=user.college;
+                    newRequest.city=user.city;
                     newRequest.userId=user._id
                     newRequest.lastEdit=Date();
                     newRequest.save((err,request)=>{
@@ -45,6 +50,34 @@ Login.findOne({email:req.params.email},(err,login)=>{
                             newNotification.type=4;
                             newNotification.refId=request._id;
                             newNotification.link="/requests";
+                             //sending mail 
+                             var transporter = nodemailer.createTransport({
+                                service: 'Gmail',
+                                auth: {
+                                user: 'toshikverma1@gmail.com', // Your email id
+                                pass: '123123123a' // Your password
+                                }
+                            });
+                            var templateString = fs.readFileSync('views/approvals.ejs', 'utf-8');
+                            var mailOptions = {
+                                from: 'toshikverma@gmail.com', // sender address
+                                to: user.email, // list of receivers
+                                subject: 'Request Saved', // Subject line
+                                html: ejs.render(templateString,{heading:"Pending approval",name:user.fname,message:"Your Request is upload and pending approval!",productName:req.body.requestName},(err)=>{
+                                if(err){
+                                    console.log(err);
+                                }
+                                }) 
+                                
+                            };
+                            transporter.sendMail(mailOptions, function (err, info) {
+                                if(err)
+                                console.log(err)
+                                
+                                else
+                                console.log(info);
+                            });
+                            //sending mail ends
                             newNotification.save();
                                 res.status(200).json(request);
 
@@ -269,7 +302,39 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                             newNotification.refId=request._id;
                                             newNotification.link="/requests";
                                             newNotification.save();
-                                            res.status(200).send({message:"request approved!"});
+                                            User.findById((request.userId),(err,ownerUser)=>{
+                                                
+                                                                                                if(!err){
+                                            //sending mail 
+  var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+    user: 'toshikverma1@gmail.com', // Your email id
+    pass: '123123123a' // Your password
+    }
+});
+var templateString = fs.readFileSync('views/approvals.ejs', 'utf-8');
+var mailOptions = {
+    from: 'toshikverma@gmail.com', // sender address
+    to: ownerUser.email, // list of receivers
+    subject: 'Approvals', // Subject line
+    html: ejs.render(templateString,{heading:"Accepted",name:ownerUser.fname,message:"Your Request is Approved!",productName:request.requestName},(err)=>{
+    if(err){
+        console.log(err);
+    }
+    }) 
+    
+};
+transporter.sendMail(mailOptions, function (err, info) {
+    if(err)
+    console.log(err)
+    
+    else
+    console.log(info);
+});
+//sending mail ends
+                                                                                                }});                             
+res.status(200).send({message:"request approved!"});
                                         }else{
 
                                             res.status(400).send({message:"some problem occured"});
@@ -488,6 +553,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                 newNotification.type=1;
                                                 newNotification.refId=request._id;
                                                 newNotification.link="/requests";
+                                                User.findById((request.userId),(err,ownerUser)=>{
+                                                    
+                                                                                                    if(!err){
+                                                //sending mail 
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+        user: 'toshikverma1@gmail.com', // Your email id
+        pass: '123123123a' // Your password
+        }
+    });
+    var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+    var mailOptions = {
+        from: 'toshikverma@gmail.com', // sender address
+        to: ownerUser.email, // list of receivers
+        subject: 'Approvals', // Subject line
+        html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your Request is Rejected!",productName:request.requestName,reason:req.body.description},(err)=>{
+        if(err){
+            console.log(err);
+        }
+        }) 
+        
+    };
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err)
+        console.log(err)
+        
+        else
+        console.log(info);
+    });
+    //sending mail ends
+                                                                                                    }});          
                                                 newNotification.save();
                                             res.status(200).send({message:"Request rejected!"});
                                         }else{
@@ -566,6 +663,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                 newNotification.type=1;
                                                 newNotification.refId=request._id;
                                                 newNotification.link="/requests";
+                                                User.findById((request.userId),(err,ownerUser)=>{
+                                                    
+                                                                                                    if(!err){
+                                                //sending mail 
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+        user: 'toshikverma1@gmail.com', // Your email id
+        pass: '123123123a' // Your password
+        }
+    });
+    var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+    var mailOptions = {
+        from: 'toshikverma@gmail.com', // sender address
+        to: ownerUser.email, // list of receivers
+        subject: 'Approvals', // Subject line
+        html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your Link is rejected!",productName:request.requestName,reason:req.body.description},(err)=>{
+        if(err){
+            console.log(err);
+        }
+        }) 
+        
+    };
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err)
+        console.log(err)
+        
+        else
+        console.log(info);
+    });
+    //sending mail ends
+                                                                                                    }});        
                                                 newNotification.save();
                                                 res.status(200).send({message:"Link  rejected!"});
                                             }else{
@@ -644,6 +773,38 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                                 newNotification.type=1;
                                                 newNotification.refId=request._id;
                                                 newNotification.link="/requests";
+                                                User.findById((request.userId),(err,ownerUser)=>{
+                                                    
+                                                                                                    if(!err){
+                                                //sending mail 
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+        user: 'toshikverma1@gmail.com', // Your email id
+        pass: '123123123a' // Your password
+        }
+    });
+    var templateString = fs.readFileSync('views/rejected.ejs', 'utf-8');
+    var mailOptions = {
+        from: 'toshikverma@gmail.com', // sender address
+        to: ownerUser.email, // list of receivers
+        subject: 'Approvals', // Subject line
+        html: ejs.render(templateString,{heading:"Rejected",name:ownerUser.fname,message:"Your image/images is/are Rejected",productName:request.requestName,reason:req.body.description},(err)=>{
+        if(err){
+            console.log(err);
+        }
+        }) 
+        
+    };
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err)
+        console.log(err)
+        
+        else
+        console.log(info);
+    });
+    //sending mail ends
+                                                                                                    }});        
                                                 newNotification.save();
                                                 res.status(200).send({message:"image reject!"});
                                             }else{
@@ -741,6 +902,52 @@ Login.findOne({email:req.params.email},(err,login)=>{
            
          }
                  });
-       });       
+       });  
+         //GET Requests BY SEARCH QUERY
+    api.get('/search/:token/:search/:page', (req, res) => {
+        //check token
+          Login.findOne({token:req.params.token},(err,user)=>{
+            if(user==undefined){
+             res.status(400).json({ message: 'User not Login!' },);
+         }else{
+                
+                //checking if page number is correct
+                let pageNumber=1
+        
+                if(!isNaN(req.params.page)){
+                   pageNumber=req.params.page;
+                 }
+                 //async query start here
+                 var countQuery = function(callback){
+                    Requests.find({requestName: new RegExp(req.params.search,"i")}, function(err, doc){
+                          if(err){ callback(err, null) }
+                          else{
+                              callback(null, doc.length);
+                           }
+                    }
+                    )};
+            
+               var retrieveQuery = function(callback){
+                Requests.find({requestName: new RegExp(req.params.search,"i")}).skip((pageNumber-1)*12).limit(12).exec(function(err, doc){
+                    if(err){ callback(err, null) }
+                    else{
+                        callback(null, doc);
+                     }
+              });
+                   
+              };
+            
+               async.parallel([countQuery, retrieveQuery], function(err, results){
+                   if(err){
+                   // console.log("error here");
+                    res.status(500).send(err);
+                   }else{
+                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                   }
+               });
+            
+         }
+                 });
+       });            
   return api;
 }

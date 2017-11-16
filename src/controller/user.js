@@ -35,8 +35,8 @@ export default({ config, db }) => {
 var transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'toshiktest@gmail.com', // Your email id
-    pass: '123123123' // Your password
+    user: 'toshikverma1@gmail.com', // Your email id
+    pass: '123123123a' // Your password
   }
 });
 var templateString = fs.readFileSync('views/verify.ejs', 'utf-8');
@@ -56,8 +56,8 @@ var mailOptions = {
 };
 transporter.sendMail(mailOptions, function (err, info) {
   if(err)
-    //console.log(err)
-    console.trace("Here I am!")
+    console.log(err)
+   
   else
     console.log(info);
 });
@@ -230,8 +230,8 @@ Login.findOne({email:req.body.email},(err,login)=>{
  var transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-      user: 'toshiktest@gmail.com', // Your email id
-      pass: '123123123' // Your password
+      user: 'toshikverma1@gmail.com', // Your email id
+      pass: '123123123a' // Your password
   }
 });
 var templateString = fs.readFileSync('views/welcome.ejs', 'utf-8');
@@ -249,8 +249,8 @@ var mailOptions = {
 };
 transporter.sendMail(mailOptions, function (err, info) {
   if(err)
-    //console.log(err)
-    console.trace("Here I am!")
+    console.log(err)
+
   else
     console.log(info);
 });

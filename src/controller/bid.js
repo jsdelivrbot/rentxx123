@@ -4,6 +4,9 @@ import Login from '../model/login';
 import Product from '../model/product';
 import Bid from '../model/bid';
 import User from '../model/user';
+import nodemailer from 'nodemailer';
+import fs from 'fs';
+import ejs from 'ejs';
 import Notification from '../model/notification';
 import bodyParser from 'body-parser';
 export default({ config, db }) => {
@@ -52,7 +55,44 @@ export default({ config, db }) => {
                                             newNotification.refId=product._id;
                                             newNotification.link="/product";
                                             newNotification.save();
-                                            res.status(200).send(bid);
+                                            User.findById((product.userId),(err,ownerUser)=>{
+
+                                                if(!err){
+                                                //sending mail 
+                                                var transporter = nodemailer.createTransport({
+                                                    service: 'Gmail',
+                                                    auth: {
+                                                    user: 'toshikverma1@gmail.com', // Your email id
+                                                    pass: '123123123a' // Your password
+                                                    }
+                                                });
+                                                var templateString = fs.readFileSync('views/bidrecieved.ejs', 'utf-8');
+                                                var mailOptions = {
+                                                    from: 'toshikverma@gmail.com', // sender address
+                                                    to: ownerUser.email, // list of receivers
+                                                    subject: 'Bid Recieved!', // Subject line
+                                                    html: ejs.render(templateString,{heading:"Bid Recieved!",name:ownerUser.fname,productName:product.productName,byperson:user.fname},(err)=>{
+                                                    if(err){
+                                                        console.log(err);
+                                                    }
+                                                    }) 
+                                                    
+                                                };
+                                                transporter.sendMail(mailOptions, function (err, info) {
+                                                    if(err)
+                                                    console.log(err)
+                                                    
+                                                    else
+                                                    console.log(info);
+                                                });
+                                                //sending mail ends
+
+                                                }else{
+                                                    console.log(err);
+                                                }
+                                            });
+                                             
+                                            res.status(200).json(bid);
                                         }else{
 
                                             res.status(400).send({message:"bid was not saved"});

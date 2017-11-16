@@ -22,7 +22,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine','ejs');
 app.use('/assets',express.static(__dirname+'/public'));
 app.use('/v1', routes);
-
+app.get('/',function(req,res){
+  
+  res.send("home");    
+  })
 app.server.listen(config.port);
 
 console.log(`Started on port ${app.server.address().port}`);
