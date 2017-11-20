@@ -89,7 +89,7 @@ transporter.sendMail(mailOptions, function (err, info) {
 //sending mail ends
          }});
                             }else{
-                                console.log(notification);
+                                
                                 notification.saw=0;
                                 notification.time=Date.now();
                                 notification.save();
