@@ -230,7 +230,9 @@ Login.findOne({email:req.params.email},(err,login)=>{
                         if(!err){
                                 if(product===undefined){
 
-                                    res.status(404).send({message:"no such product exsist"});
+                            
+                                    res.status(400).json({error: {msg: "no such product exsist", stack: e.stack}});
+                                    
                                 }else{
                                console.log(user._id);
                                console.log(product.userId);
