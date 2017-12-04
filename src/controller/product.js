@@ -228,14 +228,11 @@ Login.findOne({email:req.params.email},(err,login)=>{
 
                    
                         if(!err){
-                                if(product===undefined){
-
-                            
-                                    res.status(400).json({error: {msg: "no such product exsist", stack: e.stack}});
-                                    
+                                if(product===undefined || product===null){
+                                    console.log("I was here!!!!!!!");
+                                    res.status(400).json({message:"no such product exsist"});
                                 }else{
-                               console.log(user._id);
-                               console.log(product.userId);
+
                                     if(user._id.equals(product.userId) || login.userType>0){
                                 
                                     product.remove((err)=>{
