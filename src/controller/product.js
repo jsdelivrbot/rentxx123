@@ -208,13 +208,13 @@ Login.findOne({email:req.params.email},(err,login)=>{
              });
    });
  //deleting a product
- api.delete('/delete/:id', (req, res) => {
+ api.delete('/delete/:id/:token/:email', (req, res) => {
     //check token
-      User.findOne({email:req.body.email},(err,user)=>{
+      User.findOne({email:req.params.email},(err,user)=>{
         if(user==undefined){
          res.status(400).json({ message: 'User not found!' });
      }else{
- Login.findOne({email:req.body.email},(err,login)=>{
+ Login.findOne({email:req.params.email},(err,login)=>{
  
      if(!err){
  
@@ -223,7 +223,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
              res.status(400).json({ message: 'User not Logged In!' });
          }else{
  
-             if(login.token===req.body.token){  //token matching
+             if(login.token===req.params.token){  //token matching
                 Product.findOne({_id:req.params.id},(err,product)=>{
 
                    
