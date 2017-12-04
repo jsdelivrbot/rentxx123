@@ -230,7 +230,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                         if(!err){
                                 if(product===undefined){
 
-                                    res.status(400).send({message:"no such product exsist"});
+                                    res.status(404).send({message:"no such product exsist"});
                                 }else{
                                console.log(user._id);
                                console.log(product.userId);
@@ -243,7 +243,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
                                             res.status(200).send({message:"product deleted successsfully!"});
                                         }else{
 
-                                            res.status(400).send({message:"product was not saved"});
+                                            res.status(400).send({message:"product was not deleted"});
                                         }
                                     
                                     });
@@ -275,7 +275,7 @@ Login.findOne({email:req.params.email},(err,login)=>{
         
      }else{
  
-             res.status(400).send(err);
+             res.status(500).send(err);
          }
    
  });
