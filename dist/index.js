@@ -32,6 +32,10 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _cors = require('cors');
+
+var _cors2 = _interopRequireDefault(_cors);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
@@ -48,6 +52,7 @@ app.use(_bodyParser2.default.json({
 // api routes v1
 app.set('views', _path2.default.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use((0, _cors2.default)());
 app.use('/assets', _express2.default.static(__dirname + '/public'));
 app.use('/v1', _routes2.default);
 app.get('/', function (req, res) {

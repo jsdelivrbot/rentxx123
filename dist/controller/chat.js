@@ -124,7 +124,7 @@ exports.default = function (_ref) {
                                                         }
                                                     });
                                                 } else {
-                                                    console.log(notification);
+
                                                     notification.saw = 0;
                                                     notification.time = Date.now();
                                                     notification.save();
