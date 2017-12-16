@@ -40,7 +40,7 @@ User.findOne({email:req.body.email},(err,user)=>{
                     });
 
                 }else{  //user is already logged in
-                    res.status(200).json({token:loginDetails.token});
+                    res.status(200).json({token:loginDetails.token,userDetails:user});
 
                 }
 
