@@ -123,7 +123,7 @@ export default({ config, db }) => {
              });
    });
 
-   //v1/city/update
+   //v1/city/delete
   api.delete('/delete/:id', (req, res) => {
     //check password or match password
       User.findOne({email:req.body.email},(err,user)=>{
@@ -186,5 +186,12 @@ export default({ config, db }) => {
      }
              });
    });
+
+//get cities here
+    api.post('/get', (req, res) => {
+      City.find({}, function(err, cities) {
+        res.json(cities);
+    });
+});
   return api;
 }
