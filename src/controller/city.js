@@ -190,7 +190,7 @@ export default({ config, db }) => {
 //get cities here
     api.post('/get', (req, res) => {
       City.find({}, function(err, cities) {
-        res.json(cities);
+        res.json({"cities":cities});
     });
 });
   return api;
