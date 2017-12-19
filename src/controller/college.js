@@ -190,8 +190,8 @@ export default({ config, db }) => {
    });
 
    //get college here
-    api.post('/get/:cityId', (req, res) => {
-      City.find({city:req.params.cityId}, function(err, colleges) {
+    api.post('/get', (req, res) => {
+      City.find({city:req.body.cityId}, function(err, colleges) {
         res.json({"college":colleges});
     });
 });
