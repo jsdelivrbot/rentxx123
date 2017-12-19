@@ -31,7 +31,7 @@ export default({ config, db }) => {
 
                 if(!err){
 
-                    res.status(200).send({message:"city added!"});
+                    res.status(200).send(newcity);
                 }else{
                     res.status(500).send(err);
                 }
