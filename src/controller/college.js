@@ -28,11 +28,11 @@ export default({ config, db }) => {
                let newcollege=new College();
                newcollege.name=req.body.name;
                newcollege.city=req.body.city;
-               newcollege.save((err)=>{
+               newcollege.save((err,college)=>{
 
                 if(!err){
 
-                    res.status(200).send({message:"college added!"});
+                    res.status(200).send(college);
                 }else{
                     res.status(500).send(err);
                 }
@@ -126,13 +126,13 @@ export default({ config, db }) => {
    });
 
    //v1/college/update
-  api.delete('/delete/:id', (req, res) => {
+  api.delete('/delete/:id/:token/:email', (req, res) => {
     //check password or match password
-      User.findOne({email:req.body.email},(err,user)=>{
+      User.findOne({email:req.params.email},(err,user)=>{
         if(user==undefined){
          res.status(400).json({ message: 'User not found!' });
      }else{
- Login.findOne({email:req.body.email},(err,login)=>{
+ Login.findOne({email:req.params.email},(err,login)=>{
  
      if(!err){
  
@@ -141,7 +141,7 @@ export default({ config, db }) => {
              res.status(400).json({ message: 'User not Logged In!' });
          }else{
  
-             if(login.token==req.body.token && user.userType>0){  //token matching and only admin can add
+             if(login.token==req.params.token && user.userType>0){  //token matching and only admin can add
               
 
               College.findById((req.params.id),(err,college)=>{
@@ -188,5 +188,12 @@ export default({ config, db }) => {
      }
              });
    });
+
+   //get college here
+    api.post('/get/:cityId', (req, res) => {
+      City.find({city:req.params.cityId}, function(err, colleges) {
+        res.json({"college":colleges});
+    });
+});
   return api;
 }
