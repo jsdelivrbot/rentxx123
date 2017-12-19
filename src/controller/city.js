@@ -27,11 +27,11 @@ export default({ config, db }) => {
              if(login.token==req.body.token && user.userType>0){  //token matching and only admin can add
                let newcity=new City();
                newcity.name=req.body.name;
-               newcity.save((err)=>{
+               newcity.save((err,city)=>{
 
                 if(!err){
 
-                    res.status(200).send(newcity);
+                    res.status(200).send(city);
                 }else{
                     res.status(500).send(err);
                 }
