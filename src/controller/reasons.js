@@ -142,7 +142,7 @@ export default({ config, db }) => {
              if(login.token==req.params.token && user.userType>0){  //token matching and only admin can add
               
 
-              Reasons.findById((req.params.id),(err,)=>{
+              Reasons.findById((req.params.id),(err,reasons)=>{
 
                     if(!err){
                         if(reasons===undefined){
