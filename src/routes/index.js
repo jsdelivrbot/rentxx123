@@ -15,6 +15,7 @@ import city from '../controller/city';
 import notification from '../controller/notification';
 import forgotpassword from '../controller/forgotpassword';
 import requests from '../controller/requests';
+import reasons from '../controller/reasons';
 
 let router = express();
 
@@ -48,6 +49,8 @@ initializeDb(db => {
     router.use('/notification', notification({ config, db }));
     //user will change password here
     router.use('/forgotpassword', forgotpassword({ config, db }));
+    //user will change reasons here
+    router.use('/reasons', reasons({ config, db }));
 });
 
 export default router;
