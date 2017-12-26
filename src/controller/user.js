@@ -386,7 +386,7 @@ transporter.sendMail(mailOptions, function (err, info) {
                      //async query start here
                      console.log("query started");
                      var countQuery = function(callback){
-                        User.find({'email' : {'$regex' : '/' + req.params.query + '/', $options: 'i' } }, function(err, doc){
+                        User.find({'email' : {'$regex' : '.*' + req.params.query + '.*', $options: 'i' } }, function(err, doc){
                               if(err){ callback(err, null) }
                               else{
                                   callback(null, doc.length);
@@ -396,7 +396,7 @@ transporter.sendMail(mailOptions, function (err, info) {
                 
                    var retrieveQuery = function(callback){
                        console.log((pageNumber-1)*12);
-                       User.find({'email' : {'$regex' : '/' + req.params.query + '/', $options: 'i' }}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                       User.find({'email' : {'$regex' : '.*' + req.params.query + '.*', $options: 'i' }}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
                         if(err){ callback(err, null) }
                         else{
                             callback(null, doc);
