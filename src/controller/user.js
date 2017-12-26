@@ -151,14 +151,14 @@ Login.findOne({email:req.body.email},(err,login)=>{
  
              if(login.token==req.body.token && login.userType==3){  //token matching
               user.userType=2;
-              user.save((err)=>{
+              user.save((err,changed)=>{
 
                 if(err){
                   res.status(500).send(err);
                 }else{
 
 
-                  res.status(200).json({message:"upgraded!"});
+                  res.status(200).json(changed);
                 }
               });
              }else{
@@ -192,14 +192,14 @@ Login.findOne({email:req.body.email},(err,login)=>{
 
            if(login.token==req.body.token && login.userType==3){  //token matching
             user.userType=0;
-            user.save((err)=>{
+            user.save((err,changed)=>{
 
               if(err){
                 res.status(500).send(err);
               }else{
 
 
-                res.status(200).json({message:"demoted!"});
+                res.status(200).json(changed);
               }
             });
            }else{
