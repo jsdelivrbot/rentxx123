@@ -386,7 +386,7 @@ transporter.sendMail(mailOptions, function (err, info) {
                      //async query start here
                      console.log("query started");
                      var countQuery = function(callback){
-                        User.find({'email' : {'$regex' : '.*' + req.body.query + '.*', $options: 'i' } }, function(err, doc){
+                        User.find({'email' : {'$regex' : '/' + req.body.query + '/', $options: 'i' } }, function(err, doc){
                               if(err){ callback(err, null) }
                               else{
                                   callback(null, doc.length);
