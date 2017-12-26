@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import ejs from 'ejs';
 import path from 'path';
 import fs from 'fs';
+import async from 'async';
 import { Router } from 'express';
 import User from '../model/user';
 import Login from '../model/login';
@@ -274,5 +275,83 @@ transporter.sendMail(mailOptions, function (err, info) {
     }
 });
 });
+//we are getting user details
+ api.post('/get',(req,res)=>{
+      //check password or match password
+      User.find({email:req.body.email},(err,user)=>{
+        if(user==undefined){
+         res.status(400).json({ message: 'User not found!' });
+     }else{
+ Login.findOne({email:req.body.email},(err,login)=>{
+ 
+     if(!err){
+ 
+         if(login==undefined){ //user not found
+ 
+             res.status(400).json({ message: 'User not Logged In!' });
+         }else{
+ 
+             if(login.token==req.body.token && login.userType==3){  //token matching
+            let sort=["date","fname"];
+                    let sortby="date";
+                    if(sort.indexOf(req.params.sortby) > -1){
+
+                        sortby=req.params.sortby;
+                    }
+                    //checking if page number is correct
+                    let pageNumber=1
+            
+                    if(!isNaN(req.body.page)){
+                       pageNumber=req.body.page;
+                     }
+                     //async query start here
+                     console.log("query started");
+                     var countQuery = function(callback){
+                        User.findAll({}, function(err, doc){
+                              if(err){ callback(err, null) }
+                              else{
+                                  callback(null, doc.length);
+                               }
+                        }
+                        )};
+                
+                   var retrieveQuery = function(callback){
+                       console.log((pageNumber-1)*12);
+                       User.find({}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                        if(err){ callback(err, null) }
+                        else{
+                            callback(null, doc);
+                         }
+                  });
+                       
+                  };
+                
+                console.log(retrieveQuery);
+                   async.parallel([countQuery, retrieveQuery], function(err, results){
+                        //err contains the array of error of all the functions
+                        //results contains an array of all the results
+                        //results[0] will contain value of doc.length from countQuery function
+                        //results[1] will contain doc of retrieveQuery function
+                        //You can send the results as
+                       if(err){
+                       // console.log("error here");
+                        res.status(500).send(err);
+                       }else{
+                        res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, users: results[1]});
+                       }
+                   });
+             }else{
+
+              res.status(400).send({message:"you are not authorized for moderation!"});
+             }
+            }
+          }else{
+
+            res.status(500).send(err);
+          }
+            });
+          }
+    });
+  });
   return api;
 }
