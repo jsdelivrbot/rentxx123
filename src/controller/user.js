@@ -307,7 +307,7 @@ transporter.sendMail(mailOptions, function (err, info) {
                      //async query start here
                      console.log("query started");
                      var countQuery = function(callback){
-                        User.findAll({}, function(err, doc){
+                        User.find({}, function(err, doc){
                               if(err){ callback(err, null) }
                               else{
                                   callback(null, doc.length);
