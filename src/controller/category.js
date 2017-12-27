@@ -27,11 +27,11 @@ export default({ config, db }) => {
              if(login.token==req.body.token && user.userType>0){  //token matching and only admin can add
                let newCategory=new Category();
                newCategory.name=req.body.name;
-               newCategory.save((err)=>{
+               newCategory.save((err,category)=>{
 
                 if(!err){
 
-                    res.status(200).send({message:"category added!"});
+                    res.status(200).send(category);
                 }else{
                     res.status(500).send(err);
                 }
@@ -84,14 +84,14 @@ export default({ config, db }) => {
 
                         }else{
                         category.name=req.body.name;
-                        category.save((err)=>{
+                        category.save((err,category)=>{
 
                             if(err){
 
                                 res.status(500).send(err);
                             }else{
 
-                                res.status(200).send({message:"category updated!"});
+                                res.status(200).send(category);
                             }
 
                         });
@@ -186,5 +186,11 @@ export default({ config, db }) => {
      }
              });
    });
+   //get category here
+    api.post('/get', (req, res) => {
+      Category.find({}, function(err, category) {
+        res.json({"categories":category});
+    });
+});
   return api;
 }
