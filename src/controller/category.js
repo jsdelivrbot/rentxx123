@@ -124,13 +124,13 @@ export default({ config, db }) => {
    });
 
    //v1/category/update
-  api.delete('/delete/:id', (req, res) => {
+  api.delete('/delete/:id/:token/:email', (req, res) => {
     //check password or match password
-      User.findOne({email:req.body.email},(err,user)=>{
+      User.findOne({email:req.params.email},(err,user)=>{
         if(user==undefined){
          res.status(400).json({ message: 'User not found!' });
      }else{
- Login.findOne({email:req.body.email},(err,login)=>{
+ Login.findOne({email:req.params.email},(err,login)=>{
  
      if(!err){
  
@@ -139,7 +139,7 @@ export default({ config, db }) => {
              res.status(400).json({ message: 'User not Logged In!' });
          }else{
  
-             if(login.token==req.body.token && user.userType>0){  //token matching and only admin can add
+             if(login.token==req.params.token && user.userType>0){  //token matching and only admin can add
               
 
               Category.findById((req.params.id),(err,category)=>{
