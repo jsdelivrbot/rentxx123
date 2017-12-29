@@ -191,7 +191,7 @@ export default({ config, db }) => {
 
     //get subCategory here
     api.post('/get', (req, res) => {
-      Category.find({}, function(err, subcat) {
+      SubCategory.find({}, function(err, subcat) {
         res.json({"subCategories":subcat});
     });
 });
