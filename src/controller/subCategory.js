@@ -93,7 +93,7 @@ export default({ config, db }) => {
                                 res.status(500).send(err);
                             }else{
 
-                                res.status(200).send(subcat);
+                                res.status(200).send(SubCategory);
                             }
 
                         });
@@ -191,7 +191,7 @@ export default({ config, db }) => {
 
     //get subCategory here
     api.post('/get', (req, res) => {
-      SubCategory.find({category:req.body.category}, function(err, subcat) {
+      SubCategory.find({category:req.body.category}, function(err,subcat) {
         res.json({"subCategories":subcat});
     });
 });
