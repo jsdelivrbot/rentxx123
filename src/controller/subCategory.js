@@ -28,11 +28,11 @@ export default({ config, db }) => {
                let newCategory=new SubCategory();
                newCategory.name=req.body.name;
                newCategory.category=req.body.category;
-               newCategory.save((err)=>{
+               newCategory.save((err,subcat)=>{
 
                 if(!err){
 
-                    res.status(200).send({message:"subcategory added!"});
+                    res.status(200).send(subcat);
                 }else{
                     res.status(500).send(err);
                 }
@@ -86,14 +86,14 @@ export default({ config, db }) => {
                         }else{
                         category.name=req.body.name;
                         category.category=req.body.category;
-                        category.save((err)=>{
+                        category.save((err,SubCategory)=>{
 
                             if(err){
 
                                 res.status(500).send(err);
                             }else{
 
-                                res.status(200).send({message:"subcategory updated!"});
+                                res.status(200).send(subcat);
                             }
 
                         });
@@ -188,5 +188,12 @@ export default({ config, db }) => {
      }
              });
    });
+
+    //get subCategory here
+    api.post('/get', (req, res) => {
+      Category.find({}, function(err, subcat) {
+        res.json({"subCategories":subcat});
+    });
+});
   return api;
 }
