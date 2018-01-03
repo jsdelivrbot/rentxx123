@@ -73,14 +73,14 @@ User.findOne({email:req.body.email},(err,user)=>{
 });
   });
   //logging out a user
-    api.delete('/logout/:email',(req,res)=>{
+    api.delete('/logout/:email/:token',(req,res)=>{
       Login.findOne({email: req.params.email}, function(err, login) {
         if(!err) {
           if(login===null){
             res.status(400).json({ message: 'User not found!' });
 
           }else{
-              if(login.token===req.body.token){
+              if(login.token===req.params.token){
             login.remove(function(err) {
                 if(err){
 
