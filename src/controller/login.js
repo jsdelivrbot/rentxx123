@@ -42,9 +42,10 @@ User.findOne({email:req.body.email},(err,user)=>{
                     });
 
                 }else{  //user is already logged in
-                   user.token=loginDetailsAfterSaving.token; 
-                        let token=jsonwebtoken.sign(user,"example1");   
-                        res.status(200).json({token:token});
+                     user.token=loginDetails.token; 
+                        let token=jsonwebtoken.sign(user,"example1"); 
+                    res.status(200).json({token:token});
+
                 }
 
             }else{
