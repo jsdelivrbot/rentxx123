@@ -45,7 +45,7 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                 }else{  //user is already logged in
                      user.token=loginDetails.token; 
-                        let token=jsonwebtoken.sign(user,"example1", {
+                        let token=jsonwebtoken.sign(user.lean(),"example1", {
   expiresIn: 604800 // 1 week
 });
                     res.status(200).json({token:token});
