@@ -36,19 +36,15 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                             res.status(500).send(err);
                         }
-                       user['token']=loginDetailsAfterSaving.token;
-                       console.log(user); 
-                        let token=jsonwebtoken.sign(user.toJSON(),"example1", {
-  expiresIn: 604800 // 1 week
-});   
+                       user.toJSON().token=loginDetailsAfterSaving.token;
+                    
+                        let token=jsonwebtoken.sign(user.toJSON(),"example1");   
                         res.status(200).json({token:token});
                     });
 
                 }else{  //user is already logged in
-                     user['token']=loginDetails.token; 
-                        let token=jsonwebtoken.sign(user.toJSON(),"example1", {
-  expiresIn: 604800 // 1 week
-});
+                      user.toJSON().token=loginDetails.token; 
+                        let token=jsonwebtoken.sign(user.toJSON(),"example1");
                     res.status(200).json({token:token});
 
                 }
