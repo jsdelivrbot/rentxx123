@@ -36,7 +36,8 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                             res.status(500).send(err);
                         }
-                       user['token']=loginDetailsAfterSaving.token; 
+                       user['token']=loginDetailsAfterSaving.token;
+                       console.log(user); 
                         let token=jsonwebtoken.sign(user.toJSON(),"example1", {
   expiresIn: 604800 // 1 week
 });   
