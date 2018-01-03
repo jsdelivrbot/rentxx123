@@ -36,9 +36,10 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                             res.status(500).send(err);
                         }
-                        user.toJSON().token=loginDetailsAfterSaving.token;
+                          let a=user.toJSON();
+                     a.token=loginDetailsAfterSaving.token;
                     
-                        let token=jsonwebtoken.sign(user.toJSON(),"example1");   
+                        let token=jsonwebtoken.sign(a,"example1");   
                         res.status(200).json({token:token});
                     });
 
