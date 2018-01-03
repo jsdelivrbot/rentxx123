@@ -36,7 +36,7 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                             res.status(500).send(err);
                         }
-                        user.token=loginDetailsAfterSaving.token; 
+                       user['token']=loginDetailsAfterSaving.token; 
                         let token=jsonwebtoken.sign(user.toJSON(),"example1", {
   expiresIn: 604800 // 1 week
 });   
@@ -44,7 +44,7 @@ User.findOne({email:req.body.email},(err,user)=>{
                     });
 
                 }else{  //user is already logged in
-                     user.token=loginDetails.token; 
+                     user['token']=loginDetails.token; 
                         let token=jsonwebtoken.sign(user.toJSON(),"example1", {
   expiresIn: 604800 // 1 week
 });
