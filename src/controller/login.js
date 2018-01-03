@@ -3,6 +3,7 @@ import { Router } from 'express';
 import Login from '../model/login';
 import User from '../model/user';
 import bodyParser from 'body-parser';
+import jsonwebtoken from 'jsonwebtoken';
 export default({ config, db }) => {
   let api = Router();
 
@@ -35,13 +36,15 @@ User.findOne({email:req.body.email},(err,user)=>{
 
                             res.status(500).send(err);
                         }
-
-                        res.status(200).json({token:loginDetailsAfterSaving.token,userdetails:user});
+                        user.token=loginDetailsAfterSaving.token; 
+                        let token=jsonwebtoken.sign(user,"example1");   
+                        res.status(200).json({token:token});
                     });
 
                 }else{  //user is already logged in
-                    res.status(200).json({token:loginDetails.token,userDetails:user});
-
+                   user.token=loginDetailsAfterSaving.token; 
+                        let token=jsonwebtoken.sign(user,"example1");   
+                        res.status(200).json({token:token});
                 }
 
             }else{
