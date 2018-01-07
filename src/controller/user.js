@@ -14,7 +14,6 @@ export default({ config, db }) => {
 
   // '/v1/user/add'
   api.post('/add', (req, res) => {
-    console.log("hello "+req.body.fname);
     let newUser = new User();
     newUser.fname = req.body.fname;
     newUser.lname = req.body.lname;
@@ -26,7 +25,7 @@ export default({ config, db }) => {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate email
-          return res.status(500).send({ succes: false, message: 'User already exist!' });
+          return res.status(400).send({ succes: false, message: 'User already exist!' });
         }
   
         // Some other error
