@@ -25,7 +25,7 @@ export default({ config, db }) => {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate email
-          return res.status(200).send({ succes: false, message: 'User already exist!' });
+          return res.status(200).json({ succes: false, message: 'User already exist!' });
         }
   
         // Some other error
