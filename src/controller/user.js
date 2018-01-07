@@ -62,7 +62,7 @@ transporter.sendMail(mailOptions, function (err, info) {
     console.log(info);
 });
 //sending mail ends
-      res.json({ message: 'User saved successfully' });
+      res.json({succes: true, message: 'User saved successfully' });
     });
   });
   
