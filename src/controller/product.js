@@ -16,14 +16,14 @@ export default({ config, db }) => {
   let api = Router();
 
   // '/v1/product/add/emailID'
-  api.post('/add/:email', (req, res) => {
+  api.post('/add', (req, res) => {
    //check token
 
-     User.findOne({email:req.params.email},(err,user)=>{
+     User.findOne({email:req.body.email},(err,user)=>{
        if(user==undefined){
         res.status(400).json({ message: 'User not found!' });
     }else{
-Login.findOne({email:req.params.email},(err,login)=>{
+Login.findOne({email:req.body.email},(err,login)=>{
 
     if(!err){
 
