@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import fs from 'fs';
 export default({ config, db }) => {
   let api = Router();
 
@@ -36,7 +37,7 @@ api.post('/', (req, res) => {
 api.get('/images/:imagename', (req, res) => {
 
     let imagename = req.params.imagename
-    let imagepath = __dirname + "/images/" + imagename
+    let imagepath = __dirname + "/uploads/" + imagename
     let image = fs.readFileSync(imagepath)
     let mime = fileType(image).mime
 
