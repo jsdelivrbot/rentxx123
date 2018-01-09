@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { multer } from 'multer';
+import { diskStorage } from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
   
-const upload = multer({
+const upload = diskStorage({
     dest:'images/', 
     limits: {fileSize: 10000000, files: 1},
     fileFilter:  (req, file, callback) => {
