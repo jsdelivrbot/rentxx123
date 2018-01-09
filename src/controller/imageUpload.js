@@ -1,65 +1,31 @@
 import { Router } from 'express';
-import { upload,diskStorage } from 'multer';
+import * as multer from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
   
-const storage = diskStorage({
-    dest:'images/', 
-    limits: {fileSize: 10000000, files: 1},
-    fileFilter:  (req, file, callback) => {
-    
-        if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
-
-            return callback(new Error('Only Images are allowed !'), false)
-        }
-
-        callback(null, true);
-    }
-})
-
-var upload = upload({ storage: storage }).single('profileImage');
-
-
-api.post('/', function (req, res) {
-    upload(req, res, function (err) {
-        if (err) {
-            console.log(err);
-            // An error occurred when uploading
-        }
-        res.json({
-            success: true,
-            message: 'Image uploaded!'
-        });
-
-        // Everything went fine
-    })
+api.post('/', upload.single('profileImage'), (req, res, next) => {
 });
 
-api.get('/images/:imagename', (req, res) => {
+api.post('/photos/upload', upload.array('photos', 12), (req, res, next) => {
+});
 
-    let imagename = req.params.imagename
-    let imagepath = __dirname + "/images/" + imagename
-    let image = fs.readFileSync(imagepath)
-    let mime = fileType(image).mime
+const cpUpload = upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }]);
+api.post('/cool-profile', cpUpload, (req, res, next) => {
+});
 
-	res.writeHead(200, {'Content-Type': mime })
-	res.end(image, 'binary')
-})
+const diskStorage = multer.diskStorage({
+    destination(req, file, cb) {
+        cb(null, '/uploads');
+    },
+    filename(req, file, cb) {
+        cb(null, `${file.fieldname}-${Date.now()}`);
+    }
+});
 
+const diskUpload = multer({ storage: diskStorage });
 
-
-
-api.use((err, req, res, next) => {
-
-    if (err.code == 'ENOENT') {
-        
-        res.status(404).json({message: 'Image Not Found !'})
-
-    } else {
-
-        res.status(500).json({message:err.message}) 
-    } 
-})
+const memoryStorage = multer.memoryStorage();
+const memoryUpload = multer({ storage: memoryStorage });
   return api;
 }
