@@ -4,7 +4,7 @@ export default({ config, db }) => {
   let api = Router();
 
   
-var upload = multer({ storage: storage }).single('profileImage');
+var upload = multer({ dest: 'uploads/' })
 
 api.post('/',upload.single('profileimage') ,(req, res) => {
   var storage = multer.diskStorage({
@@ -15,9 +15,7 @@ api.post('/',upload.single('profileimage') ,(req, res) => {
         cb(null, file.fieldname + '-' + Date.now() + '.jpg')
     }
 });
-
-
-
+var upload = multer({ storage: storage }).single('profileImage');
     upload(req, res, function (err) {
         if (err) {
             // An error occurred when uploading
