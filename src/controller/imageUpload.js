@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { multer,diskStorage } from 'multer';
+import { upload,diskStorage } from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
@@ -18,7 +18,7 @@ const storage = diskStorage({
     }
 })
 
-var upload = multer({ storage: storage }).single('profileImage');
+var upload = upload({ storage: storage }).single('profileImage');
 
 
 api.post('/', function (req, res) {
