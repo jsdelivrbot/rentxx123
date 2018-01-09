@@ -3,34 +3,31 @@ import multer from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
-  const upload = multer({
-    dest: 'uploads/',
-    fileFilter: (req, file, cb) => {
-        cb(null, true);
-    }
-});
-api.post('/', upload.single('profileImage'), (req, res, next) => {
-});
-
-api.post('/photos/upload', upload.array('photos', 12), (req, res, next) => {
-});
-
-const cpUpload = upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }]);
-api.post('/cool-profile', cpUpload, (req, res, next) => {
-});
-
-const diskStorage = multer.diskStorage({
-    destination(req, file, cb) {
-        cb(null, '/uploads');
+ var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
     },
-    filename(req, file, cb) {
-        cb(null, `${file.fieldname}-${Date.now()}`);
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.jpg')
     }
 });
 
-const diskUpload = multer({ storage: diskStorage });
+var upload = multer({ storage: storage }).single('profileImage');
 
-const memoryStorage = multer.memoryStorage();
-const memoryUpload = multer({ storage: memoryStorage });
+
+api.post('/', function (req, res) {
+    upload(req, res, function (err) {
+        if (err) {
+            // An error occurred when uploading
+        }
+        res.json({
+            success: true,
+            message: 'Image uploaded!'
+        });
+
+        // Everything went fine
+    })
+});
+
   return api;
 }
