@@ -3,7 +3,12 @@ import * as multer from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
-  
+  const upload = multer({
+    dest: 'uploads/',
+    fileFilter: (req, file, cb) => {
+        cb(null, true);
+    }
+});
 api.post('/', upload.single('profileImage'), (req, res, next) => {
 });
 
