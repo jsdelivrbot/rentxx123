@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { diskStorage } from 'multer';
+import { multer,diskStorage } from 'multer';
 export default({ config, db }) => {
   let api = Router();
 
   
-const upload = diskStorage({
+const storage = diskStorage({
     dest:'images/', 
     limits: {fileSize: 10000000, files: 1},
     fileFilter:  (req, file, callback) => {
@@ -16,23 +16,25 @@ const upload = diskStorage({
 
         callback(null, true);
     }
-}).single('image')
-
-api.post('/', (req, res) => {
-
-    upload(req, res, function (err) {
-
-        if (err) {
-
-            res.status(400).json({message: err.message})
-
-        } else {
-
-            let path = `/images/${req.file.filename}`
-            res.status(200).json({message: 'Image Uploaded Successfully !', path: path})
-        }
-    })
 })
+
+var upload = multer({ storage: storage }).single('profileImage');
+
+
+api.post('/', function (req, res) {
+    upload(req, res, function (err) {
+        if (err) {
+            console.log(err);
+            // An error occurred when uploading
+        }
+        res.json({
+            success: true,
+            message: 'Image uploaded!'
+        });
+
+        // Everything went fine
+    })
+});
 
 api.get('/images/:imagename', (req, res) => {
 
