@@ -4,31 +4,23 @@ export default({ config, db }) => {
   let api = Router();
 
   
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + '.jpg')
-    }
+api.post('/', multer({ dest: 'uploads'}).single('upl'), function(req,res){
+	console.log(req.body); //form fields
+	/* example output:
+	{ title: 'abc' }
+	 */
+	console.log(req.file); //form files
+	/* example output:
+            { fieldname: 'upl',
+              originalname: 'grumpy.png',
+              encoding: '7bit',
+              mimetype: 'image/png',
+              destination: './uploads/',
+              filename: '436ec561793aa4dc475a88e84776b1b9',
+              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
+              size: 277056 }
+	 */
+	res.status(204).end();
 });
-
-var upload = multer({ storage: storage }).single('profileImage');
-
-
-router.post('/', function (req, res) {
-    upload(req, res, function (err) {
-        if (err) {
-            // An error occurred when uploading
-        }
-        res.json({
-            success: true,
-            message: 'Image uploaded!'
-        });
-
-        // Everything went fine
-    })
-});
-
   return api;
 }
