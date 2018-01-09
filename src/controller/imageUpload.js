@@ -44,7 +44,7 @@ api.get('/images/:imagename', (req, res) => {
 	res.end(image, 'binary')
 })
 
-app.use((err, req, res, next) => {
+api.use((err, req, res, next) => {
 
     if (err.code == 'ENOENT') {
         
