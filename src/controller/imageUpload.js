@@ -7,8 +7,8 @@ export default({ config, db }) => {
   let api = Router();
 
 aws.config.update({
-    secretAccessKey: 'vaLW99gpg8sUkmGF2KT4aP1S8tMzRLBAqv0S3pf5',
-    accessKeyId: 'AKIAIWCDVYX3H4ND4Q5A'
+    secretAccessKey: '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',
+    accessKeyId: 'AKIAJIS7I72DK5M42PWA'
     
 });
 
