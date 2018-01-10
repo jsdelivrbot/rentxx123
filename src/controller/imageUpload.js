@@ -7,9 +7,9 @@ export default({ config, db }) => {
   let api = Router();
 
 aws.config.update({
-    secretAccessKey: 'S23BUMZK4/OzTsfkdyvXSEdi3tqc7WJcV0NxAeMY',
-    accessKeyId: 'AKIAJIS7I72DK5M42PWA'
-    
+    secretAccessKey: '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',
+    accessKeyId: 'AKIAIHAIRHNTKQUHU3BQ',
+     region: 'sa-east-1'
 });
 
 
