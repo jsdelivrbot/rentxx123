@@ -29,6 +29,7 @@ var upload = multer({
 
 
 api.post('/', upload.array('profileImage',1), function (req, res, next) {
+    console.log(req);
     res.send("Uploaded!");
 });
 
