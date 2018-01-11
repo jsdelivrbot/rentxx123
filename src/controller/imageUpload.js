@@ -14,7 +14,7 @@ aws.config.update({
 
 
   var  s3 = new aws.S3();
-  var file_saved_name;
+
 
 var upload = multer({
     storage: multerS3({
@@ -22,15 +22,15 @@ var upload = multer({
         bucket: 'rentophilaimages',
         key: function (req, file, cb) {
             console.log(file);
-            file_saved_name= Date.now()+"_"+file.originalname;
-            cb(null,file_saved_name); //use Date.now() for unique file keys
+            cb(null, Date.now()+"_"+file.originalname); //use Date.now() for unique file keys
         }
     })
 });
 
 
 api.post('/', upload.any(), function (req, res, next) {
-    res.send(file_saved_name);
+    console.log(req.file);
+    res.send("Uploaded!");
 });
 
   return api;
