@@ -5,7 +5,7 @@ import aws from 'aws-sdk';
 import multerS3 from 'multer-s3';
 export default({ config, db }) => {
   let api = Router();
-console.log(file);
+
 aws.config.update({
     secretAccessKey: 'r2c1mJdVGCWAjKT9AQvz14oTF04sZL6Jhr6dfddq',
     accessKeyId: 'AKIAIKZWXXW4HF5QB65Q',
