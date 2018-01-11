@@ -30,7 +30,7 @@ var upload = multer({
 
 api.post('/', upload.any(), function (req, res, next) {
     console.log(req);
-    res.send("Uploaded!");
+    res.send(req.files[0].key);
 });
 
   return api;
