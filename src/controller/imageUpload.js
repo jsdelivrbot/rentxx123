@@ -28,9 +28,30 @@ var upload = multer({
 });
 
 
-api.post('/', upload.any(), function (req, res, next) {
+api.post('/', upload.any(), (req,res)=> {
     console.log(req.files);
     res.send(req.files[0].location);
+});
+api.post('/delete',(req,res)=>{
+   var params = {
+        Bucket: 'rentophilaimages',
+        Delete: {
+            Objects: [
+                {
+                    Key: req.body.key
+                }
+            ]
+        }
+
+    }
+    s3.deleteObjects(params, function (err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            return next(err);
+        }
+        console.log(data);
+        res.end('done');
+        });
 });
 
   return api;
