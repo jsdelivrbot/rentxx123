@@ -30,7 +30,7 @@ var upload = multer({
 
 api.post('/', upload.any(), (req,res)=> {
     console.log(req.files);
-    res.send(req.files[0].location);
+    res.send(req.files[0].key);
 });
 api.post('/delete',(req,res)=>{
    var params = {
