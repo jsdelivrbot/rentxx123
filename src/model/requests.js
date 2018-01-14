@@ -3,8 +3,12 @@ let Schema = mongoose.Schema;
 
 let RequestSchema = new Schema({
   requestName: String,
-  numberOfDays:Number,
-  image:{type : String , default:"noImageFound"},
+  fromDate:Date,
+  toDate:Date,
+  image1:{type : String , default:"noImageFound"},
+  image2:{type : String , default:"noImageFound"},
+  image3:{type : String , default:"noImageFound"},
+  image4:{type : String , default:"noImageFound"},
   referenceLink:{type:String},
   time:{type:Date,default:Date.now},
   college:{type:Schema.Types.ObjectId},
