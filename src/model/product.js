@@ -29,10 +29,6 @@ let ProductSchema = new Schema({
   image2:{type:String,default:"noimagefound"},
   image3:{type:String,default:"noimagefound"},
   image4:{type:String,default:"noimagefound"},
-  thumbnail1:{type:String,default:"noimagefound"},
-  thumbnail2:{type:String,default:"noimagefound"},
-  thumbnail3:{type:String,default:"noimagefound"},
-  thumbnail4:{type:String,default:"noimagefound"},
   popularity:{type:Number,default:100},
   productAge:{type:Number,default:0},
   userId:{type:Schema.Types.ObjectId},
@@ -42,7 +38,6 @@ let ProductSchema = new Schema({
   productApproved:{type:Number,default:0},
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
-  category:{type:Schema.Types.ObjectId},
   subCategory:{type:Schema.Types.ObjectId}
 
 });
