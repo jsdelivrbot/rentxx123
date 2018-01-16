@@ -1041,7 +1041,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                         }else{
                                     
                                           
-                                        product.linkApproved=2;
+                                        product.linkApproved=0;
                                             product.save((err)=>{
         
                                                 if(!err){
@@ -1151,7 +1151,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                         }else{
                                     
                                           
-                                        product.imageApproved=2;
+                                        product.imageApproved=0;
                                             product.save((err)=>{
         
                                                 if(!err){
