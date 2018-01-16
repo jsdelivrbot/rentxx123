@@ -8,6 +8,7 @@ let ProductSchema = new Schema({
   city:{type:Schema.Types.ObjectId},
   pageView:{type:Number,default:0},
   wishList:{type:String},
+  userName:{type:String},
   productDescription:{type:String,default:"N/A"},
   lastEdit:{type:Date,default:Date.now},
   ratings:{type:Number,default:0},

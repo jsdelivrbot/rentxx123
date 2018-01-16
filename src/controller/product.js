@@ -51,6 +51,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                     newProduct.condition=req.body.condition,
                     newProduct.rentTimeType=req.body.rentTimeType,
                     newProduct.isSecurityAmount=req.body.isSecurityAmount,
+                    newProduct.userName=req.body.userName,
                     newProduct.securityAmount=req.body.securityAmount,
                     newProduct.editTime=Date();
                     newProduct.save((err,product)=>{
