@@ -1529,7 +1529,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                      });
            });
 
-            //assigning category
+            //assigning subcategory
         api.put('/assignsubcategory/:id', (req, res) => {
             //check token
               User.findOne({email:req.body.email},(err,user)=>{
@@ -1563,7 +1563,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                                     
                                                                                                            
                                                     
-                                                    res.status(200).send({message:"category updated"});
+                                                    res.status(200).send({message:"subcategory updated"});
                                                 }else{
         
                                                     res.status(400).send({message:"some problem occured"});
