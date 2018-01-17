@@ -1453,5 +1453,154 @@ Login.findOne({email:req.body.email},(err,login)=>{
          }
                  });
        });       
+
+
+        //assigning category
+        api.put('/assigncategory/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.category=req.body.category;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+                                                    
+                                                                                                           
+                                                    
+                                                    res.status(200).send({message:"category updated"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
+
+            //assigning category
+        api.put('/assignsubcategory/:id', (req, res) => {
+            //check token
+              User.findOne({email:req.body.email},(err,user)=>{
+                if(user==undefined){
+                 res.status(400).json({ message: 'User not found!' });
+             }else{
+         Login.findOne({email:req.body.email},(err,login)=>{
+         
+             if(!err){
+         
+                 if(login==undefined){ //user not found
+         
+                     res.status(400).json({ message: 'User not Logged In!' });
+                 }else{
+         
+                    if(login.token==req.body.token && user.userType>0){  //token matching
+                        Product.findOne({_id:req.params.id},(err,product)=>{
+        
+                           
+                                if(!err){
+                                        if(product===undefined){
+        
+                                            res.status(400).send({message:"no such product exsist"});
+                                        }else{
+                                    
+                                          
+                                        product.subcategory=req.body.subcategory;
+                                            product.save((err)=>{
+        
+                                                if(!err){
+                                                    
+                                                                                                           
+                                                    
+                                                    res.status(200).send({message:"category updated"});
+                                                }else{
+        
+                                                    res.status(400).send({message:"some problem occured"});
+                                                }
+                                            
+                                            });
+        
+                                      
+                                            }
+        
+        
+                                }else{
+        
+                                    res.status(400).send(err);
+                                }
+        
+                            
+                        });
+                            
+                            
+         
+         
+                     }else{
+                         res.status(400).json({ message: 'invalid token!' });
+         
+                     }
+               
+                 }
+                
+             }else{
+         
+                     res.status(400).send(err);
+                 }
+           
+         });
+             }
+                     });
+           });
   return api;
 }
