@@ -935,7 +935,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                     }else{
                                 
                                       
-                                    product.productApproved=0;
+                                    product.productApproved=2;
                                         product.save((err)=>{
     
                                             if(!err){

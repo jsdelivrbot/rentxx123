@@ -187,10 +187,10 @@ export default({ config, db }) => {
              });
    });
 
-//get cities here
+//get reasons here
     api.post('/get', (req, res) => {
-      Reasons.find({}, function(err, cities) {
-        res.json({"cities":cities});
+      Reasons.find({}, function(err, reasons) {
+        res.json({"cities":reasons});
     });
 });
   return api;
