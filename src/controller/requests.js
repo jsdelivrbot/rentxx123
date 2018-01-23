@@ -886,7 +886,7 @@ res.status(200).send({message:"request approved!"});
             
                var retrieveQuery = function(callback){
                  
-                   Product.find(qry).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                   Requests.find(qry).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
                     if(err){ callback(err, null) }
                     else{
                         callback(null, doc);
