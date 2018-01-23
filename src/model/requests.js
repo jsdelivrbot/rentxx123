@@ -19,7 +19,7 @@ let RequestSchema = new Schema({
   imageApproved:{type:Number,default:0},
   userId:{ type: Schema.Types.ObjectId, ref:'user'},
   lastEdit:{type:Date,default:Date.now},
-  userName:{type:string}
+  userName:{type:String}
 });
 
 module.exports = mongoose.model('requests', RequestSchema);
