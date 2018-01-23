@@ -19,7 +19,9 @@ let RequestSchema = new Schema({
   imageApproved:{type:Number,default:0},
   userId:{ type: Schema.Types.ObjectId, ref:'user'},
   lastEdit:{type:Date,default:Date.now},
-  userName:{type:String}
+  userName:{type:String},
+  category:{type:Schema.Types.ObjectId},
+  subCategory:{type:Schema.Types.ObjectId}
 });
 
 module.exports = mongoose.model('requests', RequestSchema);
