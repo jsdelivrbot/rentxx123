@@ -876,7 +876,7 @@ res.status(200).send({message:"request approved!"});
                  let qry=JSON.parse(decodeURIComponent(req.params.query));
     
                  var countQuery = function(callback){
-                    Request.find(qry, function(err, doc){
+                    Requests.find(qry, function(err, doc){
                           if(err){ callback(err, null) }
                           else{
                               callback(null, doc.length);
@@ -901,7 +901,7 @@ res.status(200).send({message:"request approved!"});
                    // console.log("error here");
                     res.status(500).send(err);
                    }else{
-                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, requests: results[1]});
                    }
                });
            
