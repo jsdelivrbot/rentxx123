@@ -1056,7 +1056,7 @@ res.status(200).send({message:"request approved!"});
                                         }else{
                                     
                                           
-                                        request.subcategory=req.body.subcategory;
+                                        request.subCategory=req.body.subcategory;
                                             request.save((err)=>{
         
                                                 if(!err){
