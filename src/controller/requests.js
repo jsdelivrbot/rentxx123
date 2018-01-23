@@ -43,7 +43,8 @@ Login.findOne({email:req.body.email},(err,login)=>{
                     newRequest.referenceLink=req.body.referenceLink;
                     newRequest.college=user.college;
                     newRequest.city=user.city;
-                    newRequest.userId=user._id
+                    newRequest.userId=user._id;
+                    newRequest.userName=req.body.userName;
                     newRequest.lastEdit=Date();
                     newRequest.save((err,request)=>{
 
