@@ -876,7 +876,7 @@ res.status(200).send({message:"request approved!"});
                  let qry=JSON.parse(decodeURIComponent(req.params.query));
     
                  var countQuery = function(callback){
-                    Product.find(qry, function(err, doc){
+                    Request.find(qry, function(err, doc){
                           if(err){ callback(err, null) }
                           else{
                               callback(null, doc.length);
