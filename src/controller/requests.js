@@ -145,6 +145,12 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                     request.numberOfDays=req.body.numberOfDays;
                                     request.description=req.body.description;
                                     request.referenceLink=req.body.referenceLink;
+                                    request.image1=req.body.image1;
+                                    request.image2=req.body.image2;
+                                    request.image3=req.body.image3;
+                                    request.image4=req.body.image4;
+                                    request.fromDate=req.body.fromDate;
+                                    request.toDate=req.body.toDate;
                                     request.lastEdit=Date();
                                     request.save((err,request)=>{
 
