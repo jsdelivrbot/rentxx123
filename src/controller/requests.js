@@ -276,7 +276,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
    //------------------------------------------------------------------------
    //aaproval starts here!
    //approving request
-   api.put('/approverequest/:id', (req, res) => {
+   api.put('/approveproduct/:id', (req, res) => {
     //check token
       User.findOne({email:req.body.email},(err,user)=>{
         if(user==undefined){
@@ -528,7 +528,7 @@ res.status(200).send({message:"request approved!"});
                  });
        });
         //rejecting request
-   api.put('/rejectrequest/:id', (req, res) => {
+   api.put('/rejectproduct/:id', (req, res) => {
     //check token
       User.findOne({email:req.body.email},(err,user)=>{
         if(user==undefined){
@@ -664,7 +664,7 @@ res.status(200).send({message:"request approved!"});
                                     }else{
                                 
                                       
-                                    request.linkApproved=2;
+                                    request.linkApproved=0;
                                         request.save((err)=>{
     
                                             if(!err){
@@ -774,7 +774,7 @@ res.status(200).send({message:"request approved!"});
                                     }else{
                                 
                                       
-                                    request.imageApproved=2;
+                                    request.imageApproved=0;
                                         request.save((err)=>{
     
                                             if(!err){
