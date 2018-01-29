@@ -16,6 +16,7 @@ let RequestSchema = new Schema({
   description:{type:String,default:"N/A"},
   requestApproved:{type:Number,default:0},
   linkApproved:{type:Number,default:0},
+  onHold:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
   userId:{ type: Schema.Types.ObjectId, ref:'user'},
   lastEdit:{type:Date,default:Date.now},
