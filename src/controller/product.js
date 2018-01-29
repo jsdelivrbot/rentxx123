@@ -239,7 +239,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                         if(!err){
                                 if(product===undefined || product===null){
                                     console.log("I was here!!!!!!!");
-                                    res.status(400).json({message:"no such product exsist"});
+                                    res.status(404).json({message:"no such product exsist"});
                                 }else{
 
                                     if(user._id.equals(product.userId) || login.userType>0){
