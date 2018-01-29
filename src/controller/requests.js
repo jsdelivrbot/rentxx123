@@ -199,13 +199,13 @@ Login.findOne({email:req.body.email},(err,login)=>{
              });
    });
  //deleting a request
- api.delete('/delete/:id', (req, res) => {
+ api.delete('/delete/:id/:token/:email', (req, res) => {
     //check password or match password
-      User.findOne({email:req.body.email},(err,user)=>{
+      User.findOne({email:req.params.email},(err,user)=>{
         if(user==undefined){
          res.status(400).json({ message: 'User not found!' });
      }else{
- Login.findOne({email:req.body.email},(err,login)=>{
+ Login.findOne({email:req.params.email},(err,login)=>{
  
      if(!err){
  
@@ -214,7 +214,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
              res.status(400).json({ message: 'User not Logged In!' });
          }else{
  
-             if(login.token==req.body.token){  //password matching
+             if(login.token==req.params.token){  //password matching
                 Requests.findOne({_id:req.params.id},(err,request)=>{
 
                    
