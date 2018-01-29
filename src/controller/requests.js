@@ -1125,7 +1125,7 @@ res.status(200).send({message:"request approved!"});
                  }else{
          
                     if(login.token==req.body.token && user.userType>0){  //token matching
-                        Request.findOne({_id:req.params.id},(err,product)=>{
+                        Requests.findOne({_id:req.params.id},(err,product)=>{
         
                            
                                 if(!err){
