@@ -1389,7 +1389,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                     )};
             
                var retrieveQuery = function(callback){
-                   Product.find(qry).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                   Product.find(qry).skip((pageNumber-1)*12).sort({[sortby]: -1}).limit(12).exec(function(err, doc){
                     if(err){ callback(err, null) }
                     else{
                         callback(null, doc);
