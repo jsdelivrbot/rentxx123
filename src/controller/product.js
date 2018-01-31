@@ -1364,8 +1364,8 @@ Login.findOne({email:req.body.email},(err,login)=>{
             if(user==undefined){
              res.status(400).json({ message: 'User not Login!' },);
          }else{
-                let sort=["date","rating"];
-                let sortby="date";
+                let sort=["lastEdit","rating"];
+                let sortby="lastEdit";
                 if(sort.indexOf(req.params.sortby) > -1){
 
                     sortby=req.params.sortby;
