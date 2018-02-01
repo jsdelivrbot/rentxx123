@@ -35,7 +35,6 @@ let ProductSchema = new Schema({
   userId:{type:Schema.Types.ObjectId},
   brand:{type:String,default:"N/A"},
   rentTimeType:{type:Number,default:0},
-  editTime:{type:Date},
   productApproved:{type:Number,default:0},
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},

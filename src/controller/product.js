@@ -53,7 +53,6 @@ Login.findOne({email:req.body.email},(err,login)=>{
                     newProduct.isSecurityAmount=req.body.isSecurityAmount,
                     newProduct.userName=req.body.userName,
                     newProduct.securityAmount=req.body.securityAmount,
-                    newProduct.editTime=Date();
                     newProduct.save((err,product)=>{
 
                         if(!err){
@@ -159,7 +158,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                     product.isSecurityAmount=req.body.isSecurityAmount;
                                     product.securityAmount=req.body.securityAmount;
                                     product.productAge=req.body.productAge;
-                                    product.editTime=Date();
+                                    product.lastEdit=Date();
                                     product.image1=req.body.image1;
                                     product.image2=req.body.image2;
                                     product.image3=req.body.image3;
