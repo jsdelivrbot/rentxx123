@@ -1299,6 +1299,20 @@ Login.findOne({email:req.body.email},(err,login)=>{
              }
                      });
            });
+
+           //GET single product
+           api.get('/singleproduct/:id', (req, res) => {
+            
+                Product.findById({_id:req.params.id},(err,prod)=>{
+                    if(!err){
+                        res.status(200).json({product:prod});
+                    }else{
+                        res.status(404).json({message:"no product found!"})
+                    }
+                  
+              });
+           }
+           );
            //GET PRODUCTS BY CATEGORY
            api.get('/productsbycategory/:token/:category/:sortby/:page', (req, res) => {
             //check token
