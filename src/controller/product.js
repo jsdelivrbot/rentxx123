@@ -1500,7 +1500,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                     
                                           
                                         product.category=req.body.category;
-                                         product.categoryName=req.body.categoryName;
+                                         product.categoryName=req.body.name;
                                             product.save((err)=>{
         
                                                 if(!err){
