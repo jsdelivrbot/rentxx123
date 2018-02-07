@@ -39,7 +39,8 @@ let ProductSchema = new Schema({
   linkApproved:{type:Number,default:0},
   imageApproved:{type:Number,default:0},
   onHold:{type:Number,default:0},
-  subCategory:{type:Schema.Types.ObjectId}
+  subCategory:{type:Schema.Types.ObjectId},
+ subcategoryName:{type:String}
 
 });
 

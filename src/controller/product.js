@@ -1574,6 +1574,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                     
                                           
                                         product.subcategory=req.body.subcategory;
+                                        product.subcategory=req.body.name;
                                             product.save((err)=>{
         
                                                 if(!err){
