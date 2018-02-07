@@ -40,7 +40,8 @@ let ProductSchema = new Schema({
   imageApproved:{type:Number,default:0},
   onHold:{type:Number,default:0},
   subCategory:{type:Schema.Types.ObjectId},
- subcategoryName:{type:String}
+ subcategoryName:{type:String},
+ categoryName:{type:String}
 
 });
 
