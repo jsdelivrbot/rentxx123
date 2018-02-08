@@ -293,20 +293,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
     //adding a view
  api.put('/addview/:id', (req, res) => {
     //check token
-      User.findOne({email:req.body.email},(err,user)=>{
-        if(user==undefined){
-         res.status(400).json({ message: 'User not found!' });
-     }else{
- Login.findOne({email:req.body.email},(err,login)=>{
- 
-     if(!err){
- 
-         if(login==undefined){ //user not found
- 
-             res.status(400).json({ message: 'User not Logged In!' });
-         }else{
- 
-             if(login.token===req.body.token){  //token matching
+      
                 Product.findOne({_id:req.params.id},(err,product)=>{
 
                    
@@ -340,26 +327,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                         }
 
                     
-                });
-                    
-                    
- 
- 
-             }else{
-                 res.status(400).json({ message: 'invalid token!' });
- 
-             }
-       
-         }
-        
-     }else{
- 
-             res.status(400).send(err);
-         }
-   
- });
-     }
-             });
+                
    });
    //adding to wishlist
    api.put('/addwishlist/:id', (req, res) => {
