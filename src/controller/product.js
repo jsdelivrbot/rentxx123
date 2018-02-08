@@ -327,7 +327,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                         }
 
                     
-                
+                });            
    });
    //adding to wishlist
    api.put('/addwishlist/:id', (req, res) => {
