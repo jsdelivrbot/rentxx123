@@ -13,13 +13,13 @@ export default({ config, db }) => {
   let api = Router();
 
   // '/v1/bid/add/emailID'
-  api.post('/add/:email', (req, res) => {
+  api.post('/add', (req, res) => {
    //check token match token
-      User.findOne({email:req.params.email},(err,user)=>{
+      User.findOne({email:req.body.email},(err,user)=>{
         if(user==undefined){
          res.status(400).json({ message: 'User not found!' });
      }else{
- Login.findOne({email:req.params.email},(err,login)=>{
+ Login.findOne({email:req.body.email},(err,login)=>{
  
      if(!err){
  
@@ -44,6 +44,7 @@ export default({ config, db }) => {
                                     newBid.productId=req.body.productId;
                                     newBid.userId=user._id;
                                     newBid.description=req.body.description;
+                                    newBid.userName=req.body.userName;
                                     newBid.save((err,bid)=>{
 
                                         if(!err){
