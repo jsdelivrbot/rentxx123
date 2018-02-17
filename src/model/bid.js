@@ -7,7 +7,8 @@ let BidSchema = new Schema({
   productId:{ type: Schema.Types.ObjectId, ref:'product'},
   description:{type:String,default:"N/A"},
   amount:Number,
-  days:Number,
+  days:Number, 
+  userName:{type:String},
   isSpam:{type:Number,default:0},
   lastEdit:{type:Date,default:Date.now}
 
