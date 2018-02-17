@@ -9,6 +9,7 @@ let BidSchema = new Schema({
   amount:Number,
   days:Number, 
   userName:{type:String},
+  productName:{type:String},
   isSpam:{type:Number,default:0},
   lastEdit:{type:Date,default:Date.now}
 
