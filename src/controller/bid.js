@@ -5,6 +5,7 @@ import Product from '../model/product';
 import Bid from '../model/bid';
 import User from '../model/user';
 import nodemailer from 'nodemailer';
+import async from 'async';
 import fs from 'fs';
 import ejs from 'ejs';
 import Notification from '../model/notification';
