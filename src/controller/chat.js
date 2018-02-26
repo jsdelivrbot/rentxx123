@@ -34,7 +34,7 @@ export default({ config, db }) => {
              
                newChat.chatId = parseInt(user._id, 16) > parseInt(req.body.towards, 16) ? user._id + req.body.towards : req.body.towards + user._id;
                newChat.message=req.body.message;
-               newChat.save((err)=>{
+               newChat.save((err,chatValue)=>{
 
                 if(!err){
                     Notification.findOne({
@@ -98,7 +98,7 @@ transporter.sendMail(mailOptions, function (err, info) {
 
                     });
                    
-                    res.status(200).send({message:"chat added!"});
+                    res.status(200).send(chatValue);
                 }else{
                     res.status(500).send(err);
                 }
