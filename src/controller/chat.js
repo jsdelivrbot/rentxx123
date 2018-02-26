@@ -124,7 +124,7 @@ transporter.sendMail(mailOptions, function (err, info) {
              });
    });
 //v1/chat/get
-api.post('/get/:userId', (req, res) => {
+api.post('/get', (req, res) => {
     //check password or match password
       User.findOne({email:req.body.email},(err,user)=>{
         if(user==undefined){
@@ -141,13 +141,13 @@ api.post('/get/:userId', (req, res) => {
  
              if(login.token==req.body.token ){  //token matching and only admin can add
                 
-                let chatId = parseInt(user._id, 16) > parseInt(req.params.userId, 16) ? user._id + req.params.userId : req.params.userId + user._id;
+                let chatId = parseInt(user._id, 16) > parseInt(req.body.userId, 16) ? user._id + req.body.userId : req.body.userId + user._id;
                     
                    Chat.find({chatId:chatId},(err,chat)=>{
                     if(!err){
                         if(chat===undefined){
 
-                            res.status(400).json({message:"no chat found!"});
+                            res.status(200).json({});
                         }else{
 
                             res.status(200).json(chat);
