@@ -1360,6 +1360,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                  //async query start here
                  
                  let qry=JSON.parse(decodeURIComponent(req.params.query));
+                 console.log(qry)
                  var countQuery = function(callback){
                     Product.find(qry, function(err, doc){
                           if(err){ callback(err, null) }
