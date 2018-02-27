@@ -47,6 +47,7 @@ export default({ config, db }) => {
                                     newBid.description=req.body.description;
                                     newBid.userName=req.body.userName;
                                     newBid.productName=req.body.productName;
+                                    newBid.productById=product.userId;
                                     newBid.save((err,bid)=>{
 
                                         if(!err){
