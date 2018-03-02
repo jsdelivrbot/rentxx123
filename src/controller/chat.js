@@ -197,7 +197,51 @@ api.post('/getAll', (req, res) => {
              if(login.token==req.body.token ){  //token matching and only admin can add
                 
                
-                    
+                let pageNumber=1
+        
+                if(!isNaN(req.params.page)){
+                   pageNumber=req.body.page;
+                 }
+                 //async query start here
+                 
+                 
+                 var countQuery = function(callback){
+                    Chat.aggregate([
+    { 
+        $match: { 
+            $or: [
+                { from: user._id }, 
+                { towards:user._id }
+            ]                   
+        } 
+    },
+    {$group:{_id: '$chatId', "otherField": { "$last": "$message" },"from": { "$last": "$from" },"towards": { "$last": "$towards" }}},
+    { 
+        $lookup: { 
+            from: "users", 
+            localField: "from", 
+            foreignField: "_id", 
+            as: "fromName" 
+        }
+        
+    },
+    { 
+        $lookup: { 
+             from: "users", 
+            localField: "towards", 
+            foreignField: "_id", 
+            as: "towardsName" 
+        }
+        
+    }], function(err, doc){
+                          if(err){ callback(err, null) }
+                          else{
+                              callback(null, doc.length);
+                           }
+                    }
+                    )};
+            
+               var retrieveQuery = function(callback){
                    Chat.aggregate([
     { 
         $match: { 
@@ -225,23 +269,67 @@ api.post('/getAll', (req, res) => {
             as: "towardsName" 
         }
         
-    }],
-    (err,chat)=>{
-                    if(!err){
-                        if(chat===undefined){
+    }]).skip((pageNumber-1)*12).sort({[sortby]: -1}).limit(12).exec(function(err, doc){
+                    if(err){ callback(err, null) }
+                    else{
+                        callback(null, doc);
+                     }
+              });
+                   
+              };
+            
+               async.parallel([countQuery, retrieveQuery], function(err, results){
+                   if(err){
+                   // console.log("error here");
+                    res.status(500).send(err);
+                   }else{
+                    res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, chats: results[1]});
+                   }
+               });
+    //                Chat.aggregate([
+    // { 
+    //     $match: { 
+    //         $or: [
+    //             { from: user._id }, 
+    //             { towards:user._id }
+    //         ]                   
+    //     } 
+    // },
+    // {$group:{_id: '$chatId', "otherField": { "$last": "$message" },"from": { "$last": "$from" },"towards": { "$last": "$towards" }}},
+    // { 
+    //     $lookup: { 
+    //         from: "users", 
+    //         localField: "from", 
+    //         foreignField: "_id", 
+    //         as: "fromName" 
+    //     }
+        
+    // },
+    // { 
+    //     $lookup: { 
+    //          from: "users", 
+    //         localField: "towards", 
+    //         foreignField: "_id", 
+    //         as: "towardsName" 
+    //     }
+        
+    // }],
+    // (err,chat)=>{
+    //                 if(!err){
+    //                     if(chat===undefined){
 
-                            res.status(200).json({});
-                        }else{
+    //                         res.status(200).json({});
+    //                     }else{
 
-                            res.status(200).json(chat);
-                        }
+    //                         res.status(200).json(chat);
+    //                     }
 
-                    }else{
+    //                 }else{
 
-                        res.status(500).send(err);
-                    }
+    //                     res.status(500).send(err);
+    //                 }
 
-                   }); 
+    //                }); 
  
  
              }else{
