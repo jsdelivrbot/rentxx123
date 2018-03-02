@@ -207,7 +207,7 @@ api.post('/getAll', (req, res) => {
             ]                   
         } 
     },
-    {$group:{_id: '$chatId', "otherField": { "$last": "$message" }}},
+    {$group:{_id: '$chatId', "otherField": { "$last": "$message" },"from": { "$last": "$from" },"towards": { "$last": "$towards" }}},
     { 
         $lookup: { 
             from: "users", 
