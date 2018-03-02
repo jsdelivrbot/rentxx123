@@ -177,5 +177,87 @@ api.post('/get', (req, res) => {
      }
              });
    });
+
+   //v1/chat/get
+api.post('/getAll', (req, res) => {
+    //check password or match password
+      User.findOne({email:req.body.email},(err,user)=>{
+        if(user==undefined){
+         res.status(400).json({ message: 'User not found!' });
+     }else{
+ Login.findOne({email:req.body.email},(err,login)=>{
+ 
+     if(!err){
+ 
+         if(login==undefined){ //user not found
+ 
+             res.status(400).json({ message: 'User not Logged In!' });
+         }else{
+ 
+             if(login.token==req.body.token ){  //token matching and only admin can add
+                
+               
+                    
+                   Chat.aggregate([
+    { 
+        $match: { 
+            $or: [
+                { from: user._id }, 
+                { towards:user._id }
+            ]                   
+        } 
+    },
+    { 
+        $lookup: { 
+            from: "User", 
+            localField: "from", 
+            foreignField: "UserId", 
+            as: "fromName" 
+        }
+        
+    },
+    { 
+        $lookup: { 
+             from: "User", 
+            localField: "towards", 
+            foreignField: "UserId", 
+            as: "towardsName" 
+        }
+        
+    },
+    (err,chat)=>{
+                    if(!err){
+                        if(chat===undefined){
+
+                            res.status(200).json({});
+                        }else{
+
+                            res.status(200).json(chat);
+                        }
+
+                    }else{
+
+                        res.status(500).send(err);
+                    }
+
+                   }]); 
+ 
+ 
+             }else{
+                 res.status(400).json({ message: 'invalid token!' });
+ 
+             }
+       
+         }
+        
+     }else{
+ 
+             res.status(400).send(err);
+         }
+   
+ });
+     }
+             });
+   });
   return api;
 }
