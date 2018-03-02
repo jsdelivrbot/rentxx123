@@ -209,15 +209,6 @@ api.post('/getAll', (req, res) => {
     },
     { 
         $lookup: { 
-            from: "User", 
-            localField: "from", 
-            foreignField: "UserId", 
-            as: "fromName" 
-        }
-        
-    },
-    { 
-        $lookup: { 
              from: "User", 
             localField: "towards", 
             foreignField: "UserId", 
