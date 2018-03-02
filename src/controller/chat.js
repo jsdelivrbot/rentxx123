@@ -207,7 +207,7 @@ api.post('/getAll', (req, res) => {
             ]                   
         } 
     },
-    {$group:{_id: 'chatId', message:'$message'}},
+    {$group:{_id: 'chatId', "otherField": { "$message": "$message" }}},
     { 
         $lookup: { 
             from: "users", 
