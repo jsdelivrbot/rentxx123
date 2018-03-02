@@ -207,6 +207,7 @@ api.post('/getAll', (req, res) => {
             ]                   
         } 
     },
+    {$group:{_id: '$chatId', message:'$message',time:'$time'}},
     { 
         $lookup: { 
             from: "users", 
