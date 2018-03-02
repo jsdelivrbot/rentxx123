@@ -200,7 +200,7 @@ api.post('/getAll', (req, res) => {
                
                 let pageNumber=1
         
-                if(!isNaN(req.params.page)){
+                if(!isNaN(req.body.page)){
                    pageNumber=req.body.page;
                  }
                  //async query start here
