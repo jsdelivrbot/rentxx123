@@ -3,6 +3,7 @@ import { Router } from 'express';
 import Login from '../model/login';
 import User from '../model/user';
 import Chat from '../model/chat';
+import async from 'async';
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import ejs from 'ejs';
