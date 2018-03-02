@@ -209,13 +209,22 @@ api.post('/getAll', (req, res) => {
     },
     { 
         $lookup: { 
+            from: "User", 
+            localField: "from", 
+            foreignField: "UserId", 
+            as: "fromName" 
+        }
+        
+    },
+    { 
+        $lookup: { 
              from: "User", 
             localField: "towards", 
             foreignField: "UserId", 
             as: "towardsName" 
         }
         
-    },
+    }],
     (err,chat)=>{
                     if(!err){
                         if(chat===undefined){
@@ -231,7 +240,7 @@ api.post('/getAll', (req, res) => {
                         res.status(500).send(err);
                     }
 
-                   }]); 
+                   }); 
  
  
              }else{
