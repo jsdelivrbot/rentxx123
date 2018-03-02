@@ -270,7 +270,7 @@ api.post('/getAll', (req, res) => {
             as: "towardsName" 
         }
         
-    }]).skip((pageNumber-1)*12).sort({[sortby]: -1}).limit(12).exec(function(err, doc){
+    }]).skip((pageNumber-1)*12).sort({time: -1}).limit(12).exec(function(err, doc){
                     if(err){ callback(err, null) }
                     else{
                         callback(null, doc);
