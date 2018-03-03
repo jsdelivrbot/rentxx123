@@ -52,7 +52,7 @@ export default({ config, db }) => {
                                 newNotification.userId=req.body.towards;
                                 newNotification.message="You have a message!"
                                 newNotification.description="Message recieved from "+user.fname;
-                                newNotification.type=1;
+                                newNotification.type=6;
                                 newNotification.refId=user._id;
                                 newNotification.link="/chat";
                                 newNotification.save();
