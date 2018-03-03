@@ -45,7 +45,7 @@ api.post('/get', (req, res) => {
                 
                    var retrieveQuery = function(callback){
                        console.log((pageNumber-1)*12);
-                          Notification.find({userId:user._id}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                          Notification.find({userId:user._id}).skip((pageNumber-1)*12).sort({time: -1}).limit(12).exec(function(err, doc){
                         if(err){ callback(err, null) }
                         else{
                             callback(null, doc);
