@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Router } from 'express';
+import async from 'async';
 import Login from '../model/login';
 import User from '../model/user';
 import Notification from '../model/notification';
@@ -24,24 +25,49 @@ api.post('/get', (req, res) => {
          }else{
  
              if(login.token==req.body.token ){  //token matching and only admin can add
-                     
-                   Notification.find({userId:user._id},(err,notification)=>{
-                    if(!err){
-                        if(chat===undefined){
-
-                            res.status(400).json({message:"no notification found!"});
-                        }else{
-
-                            res.status(200).json(notification);
+                  
+                    //checking if page number is correct
+                    let pageNumber=1
+            
+                    if(!isNaN(req.body.page)){
+                       pageNumber=req.body.page;
+                     }
+                     //async query start here
+                     console.log("query started");
+                     var countQuery = function(callback){
+                         Notification.find({userId:user._id}, function(err, doc){
+                              if(err){ callback(err, null) }
+                              else{
+                                  callback(null, doc.length);
+                               }
                         }
-
-                    }else{
-
+                        )};
+                
+                   var retrieveQuery = function(callback){
+                       console.log((pageNumber-1)*12);
+                          Notification.find({userId:user._id}).skip((pageNumber-1)*12).sort({sortby: -1}).limit(12).exec(function(err, doc){
+                        if(err){ callback(err, null) }
+                        else{
+                            callback(null, doc);
+                         }
+                  });
+                       
+                  };
+                
+                console.log(retrieveQuery);
+                   async.parallel([countQuery, retrieveQuery], function(err, results){
+                        //err contains the array of error of all the functions
+                        //results contains an array of all the results
+                        //results[0] will contain value of doc.length from countQuery function
+                        //results[1] will contain doc of retrieveQuery function
+                        //You can send the results as
+                       if(err){
+                       // console.log("error here");
                         res.status(500).send(err);
-                    }
-
-                   }); 
- 
+                       }else{
+                        res.status(200).json({total_pages:Math.floor(results[0]/12+1) , page: pageNumber, products: results[1]});
+                       }
+                   });
  
              }else{
                  res.status(400).json({ message: 'invalid token!' });
