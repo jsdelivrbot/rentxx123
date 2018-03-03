@@ -310,7 +310,7 @@ Login.findOne({email:req.body.email},(err,login)=>{
                                             newNotification.userId=request.userId;
                                             newNotification.message="Request Approved!"
                                             newNotification.description="Your Request "+request.requestName+" has been approved";
-                                            newNotification.type=1;
+                                            newNotification.type=4;
                                             newNotification.refId=request._id;
                                             newNotification.link="/requests";
                                             newNotification.save();
