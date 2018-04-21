@@ -17,6 +17,7 @@ import forgotpassword from '../controller/forgotpassword';
 import requests from '../controller/requests';
 import reasons from '../controller/reasons';
 import imageUpload from '../controller/imageUpload';
+import spam from '../controller/spam';
 
 let router = express();
 
@@ -54,6 +55,7 @@ initializeDb(db => {
     router.use('/reasons', reasons({ config, db }));
     //user will change reasons here
     router.use('/imageUpload', imageUpload({ config, db }));
+    router.use('/spam', spam({ config, db }));
 });
 
 export default router;
