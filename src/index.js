@@ -25,7 +25,7 @@ app.use('/assets',express.static(__dirname+'/public'));
 app.use('/v1', routes);
 app.get('/',function(req,res){
   
-   response.sendFile(__dirname+'/index.html');   
+   res.sendFile(__dirname+'/index.html');   
   })
 app.server.listen(app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
