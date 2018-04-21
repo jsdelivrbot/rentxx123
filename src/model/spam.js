@@ -5,10 +5,10 @@ let SpamSchema = new Schema({
   partId: String,
   epicNumber:String,
   age:{type:Number},
-  gender:{type:String},
+  gender:{type:Number},
   time:{type:Date,default:Date.now},
-  documents:String,
-  isVoted:String
+  documents:{type:Number},
+  isVoted:{type:Number}
 
 });
 
