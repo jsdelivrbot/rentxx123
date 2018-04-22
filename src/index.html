@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    
+    <title>Polling booth</title>
+</head>
+<body>
+    <h1>Polling Booth</h1>
+    <div><h3>Total Voters(1400):Total Voted(100)</h3></div>
+    <div><h4>Voting Percentage:10%</h4></div>
+     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+<script>
+window.onload = function() {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	exportEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "Desktop Browser Market Share in 2016"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 25,
+		toolTipContent: "<b>{label}</b>: {y}%",
+		showInLegend: "true",
+		legendText: "{label}",
+		indexLabelFontSize: 16,
+		indexLabel: "{label} - {y}%",
+		dataPoints: [
+			{ y: 51.08, label: "Voting Percentage" },
+			{ y: 27.34, label: "Still to Vote" },
+			
+		]
+	}]
+});
+var chart2 = new CanvasJS.Chart("chartgender", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	exportEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "Desktop Browser Market Share in 2016"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 25,
+		toolTipContent: "<b>{label}</b>: {y}%",
+		showInLegend: "true",
+		legendText: "{label}",
+		indexLabelFontSize: 16,
+		indexLabel: "{label} - {y}%",
+		dataPoints: [
+			{ y: 51.08, label: "Male" },
+			{ y: 27.34, label: "Female" },
+            { y: 27.34, label: "Transgender" }
+			
+		]
+	}]
+});
+var chart3 = new CanvasJS.Chart("chartage", {       
+	animationEnabled: true,
+	title: {
+		text: "Try Dragging Any Column to Resize"
+	},
+	axisX:{
+		minimum: 5,
+		maximum: 95
+	},
+	data: [{
+		type: "column",
+		dataPoints: [
+			{ x: 10, y: 71 },
+			{ x: 20, y: 55 },
+			{ x: 30, y: 50 }
+		]
+	}]
+});
+var chart4 = new CanvasJS.Chart("charttime", {
+	animationEnabled: true,  
+	title:{
+		text: "Music Album Sales by Year"
+	},
+	axisY: {
+		title: "Units Sold",
+		valueFormatString: "#0,,.",
+		suffix: "mn",
+		stripLines: [{
+			value: 3366500,
+			label: "Average"
+		}]
+	},
+	data: [{
+		yValueFormatString: "#,### Units",
+		xValueFormatString: "YYYY",
+		type: "spline",
+		dataPoints: [
+			{x: new Date(2002, 0), y: 2506000},
+			{x: new Date(2003, 0), y: 2798000},
+			{x: new Date(2004, 0), y: 3386000},
+			{x: new Date(2005, 0), y: 6944000},
+			{x: new Date(2006, 0), y: 6026000},
+			{x: new Date(2007, 0), y: 2394000},
+			{x: new Date(2008, 0), y: 1872000},
+			{x: new Date(2009, 0), y: 2140000},
+			{x: new Date(2010, 0), y: 7289000},
+			{x: new Date(2011, 0), y: 4830000},
+			{x: new Date(2012, 0), y: 2009000},
+			{x: new Date(2013, 0), y: 2840000},
+			{x: new Date(2014, 0), y: 2396000},
+			{x: new Date(2015, 0), y: 1613000},
+			{x: new Date(2016, 0), y: 2821000},
+			{x: new Date(2017, 0), y: 2000000}
+		]
+	}]
+});
+var chart5 = new CanvasJS.Chart("chartdocuments", {       
+	animationEnabled: true,
+	title: {
+		text: "Try Dragging Any Column to Resize"
+	},
+	axisX:{
+		minimum: 5,
+		maximum: 95
+	},
+	data: [{
+		type: "column",
+		dataPoints: [
+			{ x: 10, y: 71 },
+			{ x: 20, y: 55 },
+			{ x: 30, y: 50 }
+		]
+	}]
+});
+chart.render();
+chart2.render();
+chart3.render();
+chart4.render();
+chart5.render();
+ Pusher.logToConsole = true;
+
+    var pusher = new Pusher('dd20d8a12a2c4b1c7960', {
+      cluster: 'ap2',
+      encrypted: true
+    });
+
+    var channel = pusher.subscribe('os-poll');
+    channel.bind('os-vote', function(data) {
+      alert(data);
+    });
+}
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<div id="chartContainer" style="height: 300px; width: 50%; float:left;"></div>
+<div id="chartgender" style="height: 300px; width: 50%; float:left;"></div>
+<div id="chartage" style="height: 300px; width: 50%; float:left;"></div>
+<div id="charttime" style="height: 300px; width: 50%; float:left;"></div>
+<div id="chartdocuments" style="height: 300px; width: 50%; float:left;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>
