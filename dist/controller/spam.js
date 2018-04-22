@@ -49,15 +49,15 @@ exports.default = function (_ref) {
     spam.isVoted = req.body.isVoted;
     spam.document = req.body.document;
     spam.save(function (err, spam_got) {
-
+      pusher.trigger('os-poll', 'os-vote', {
+        gender: req.body.gender,
+        partId: req.body.partId,
+        age: req.body.age,
+        isVoted: req.body.isVoted,
+        document: req.body.document
+      });
       if (!err) {
-        pusher.trigger('os-poll', 'os-vote', {
-          gender: req.body.gender,
-          partId: req.body.partId,
-          age: req.body.age,
-          isVoted: req.body.isVoted,
-          document: req.body.document
-        });
+
         res.status(200).send(spam_got);
       } else {
         res.status(500).send(err);
