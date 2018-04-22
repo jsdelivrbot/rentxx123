@@ -24,7 +24,7 @@ app.use(cors());
 app.use('/assets',express.static(__dirname+'/public'));
 app.use('/v1', routes);
 app.get('/',function(req,res){
-  
+  res.json(__dirname);
    res.sendFile('/index.html', {root: __dirname }); 
   })
 app.server.listen(app.listen(process.env.PORT || 3000, function(){
