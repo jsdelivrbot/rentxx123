@@ -25,8 +25,6 @@ let pusher = new Pusher({
                    spam.isVoted=req.body.isVoted;
                     spam.document=req.body.document;
                spam.save((err,spam_got)=>{
-
-                if(!err){
 pusher.trigger('os-poll', 'os-vote', {
                      gender:req.body.gender,
                      partId:req.body.partId,
@@ -34,6 +32,8 @@ pusher.trigger('os-poll', 'os-vote', {
                      isVoted:req.body.isVoted,
                      document:req.body.document
 });
+                if(!err){
+
                     res.status(200).send(spam_got);
                 }else{
                     res.status(500).send(err);
