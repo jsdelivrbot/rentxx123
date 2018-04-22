@@ -10,6 +10,10 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 
 var _express = require('express');
 
+var _async = require('async');
+
+var _async2 = _interopRequireDefault(_async);
+
 var _login = require('../model/login');
 
 var _login2 = _interopRequireDefault(_login);
@@ -54,18 +58,47 @@ exports.default = function (_ref) {
                             if (login.token == req.body.token) {
                                 //token matching and only admin can add
 
-                                _notification2.default.find({ userId: user._id }, function (err, notification) {
-                                    if (!err) {
-                                        if (chat === undefined) {
+                                //checking if page number is correct
+                                var pageNumber = 1;
 
-                                            res.status(400).json({ message: "no notification found!" });
+                                if (!isNaN(req.body.page)) {
+                                    pageNumber = req.body.page;
+                                }
+                                //async query start here
+                                console.log("query started");
+                                var countQuery = function countQuery(callback) {
+                                    _notification2.default.find({ userId: user._id }, function (err, doc) {
+                                        if (err) {
+                                            callback(err, null);
                                         } else {
-
-                                            res.status(200).json(notification);
+                                            callback(null, doc.length);
                                         }
-                                    } else {
+                                    });
+                                };
 
+                                var retrieveQuery = function retrieveQuery(callback) {
+                                    console.log((pageNumber - 1) * 12);
+                                    _notification2.default.find({ userId: user._id }).skip((pageNumber - 1) * 12).sort({ time: -1 }).limit(12).exec(function (err, doc) {
+                                        if (err) {
+                                            callback(err, null);
+                                        } else {
+                                            callback(null, doc);
+                                        }
+                                    });
+                                };
+
+                                console.log(retrieveQuery);
+                                _async2.default.parallel([countQuery, retrieveQuery], function (err, results) {
+                                    //err contains the array of error of all the functions
+                                    //results contains an array of all the results
+                                    //results[0] will contain value of doc.length from countQuery function
+                                    //results[1] will contain doc of retrieveQuery function
+                                    //You can send the results as
+                                    if (err) {
+                                        // console.log("error here");
                                         res.status(500).send(err);
+                                    } else {
+                                        res.status(200).json({ total_pages: Math.floor(results[0] / 12 + 1), page: pageNumber, products: results[1] });
                                     }
                                 });
                             } else {

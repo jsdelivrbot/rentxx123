@@ -60,11 +60,11 @@ exports.default = function (_ref) {
                                 var newCategory = new _subCategory2.default();
                                 newCategory.name = req.body.name;
                                 newCategory.category = req.body.category;
-                                newCategory.save(function (err) {
+                                newCategory.save(function (err, subcat) {
 
                                     if (!err) {
 
-                                        res.status(200).send({ message: "subcategory added!" });
+                                        res.status(200).send(subcat);
                                     } else {
                                         res.status(500).send(err);
                                     }
@@ -111,14 +111,14 @@ exports.default = function (_ref) {
                                         } else {
                                             category.name = req.body.name;
                                             category.category = req.body.category;
-                                            category.save(function (err) {
+                                            category.save(function (err, SubCategory) {
 
                                                 if (err) {
 
                                                     res.status(500).send(err);
                                                 } else {
 
-                                                    res.status(200).send({ message: "subcategory updated!" });
+                                                    res.status(200).send(SubCategory);
                                                 }
                                             });
                                         }
@@ -141,13 +141,13 @@ exports.default = function (_ref) {
     });
 
     //v1/category/update
-    api.delete('/delete/:id', function (req, res) {
+    api.delete('/delete/:id/:token/:email', function (req, res) {
         //check password or match password
-        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+        _user2.default.findOne({ email: req.params.email }, function (err, user) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not found!' });
             } else {
-                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+                _login2.default.findOne({ email: req.params.email }, function (err, login) {
 
                     if (!err) {
 
@@ -157,7 +157,7 @@ exports.default = function (_ref) {
                             res.status(400).json({ message: 'User not Logged In!' });
                         } else {
 
-                            if (login.token == req.body.token && user.userType > 0) {
+                            if (login.token == req.params.token && user.userType > 0) {
                                 //token matching and only admin can add
 
 
@@ -193,6 +193,13 @@ exports.default = function (_ref) {
                     }
                 });
             }
+        });
+    });
+
+    //get subCategory here
+    api.post('/get', function (req, res) {
+        _subCategory2.default.find({ category: req.body.category }, function (err, subcat) {
+            res.json({ "subCategories": subcat });
         });
     });
     return api;

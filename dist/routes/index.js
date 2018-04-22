@@ -72,6 +72,18 @@ var _requests = require('../controller/requests');
 
 var _requests2 = _interopRequireDefault(_requests);
 
+var _reasons = require('../controller/reasons');
+
+var _reasons2 = _interopRequireDefault(_reasons);
+
+var _imageUpload = require('../controller/imageUpload');
+
+var _imageUpload2 = _interopRequireDefault(_imageUpload);
+
+var _spam = require('../controller/spam');
+
+var _spam2 = _interopRequireDefault(_spam);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -106,6 +118,11 @@ var router = (0, _express2.default)();
   router.use('/notification', (0, _notification2.default)({ config: _config2.default, db: db }));
   //user will change password here
   router.use('/forgotpassword', (0, _forgotpassword2.default)({ config: _config2.default, db: db }));
+  //user will change reasons here
+  router.use('/reasons', (0, _reasons2.default)({ config: _config2.default, db: db }));
+  //user will change reasons here
+  router.use('/imageUpload', (0, _imageUpload2.default)({ config: _config2.default, db: db }));
+  router.use('/spam', (0, _spam2.default)({ config: _config2.default, db: db }));
 });
 
 exports.default = router;

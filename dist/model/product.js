@@ -1,24 +1,21 @@
 "use strict";
 
-var _ref;
-
 var _mongoose = require("mongoose");
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var Schema = _mongoose2.default.Schema;
 
-var ProductSchema = new Schema((_ref = {
+var ProductSchema = new Schema({
   productName: String,
   time: { type: Date, default: Date.now },
   college: { type: Schema.Types.ObjectId },
   city: { type: Schema.Types.ObjectId },
   pageView: { type: Number, default: 0 },
   wishList: { type: String },
+  userName: { type: String },
   productDescription: { type: String, default: "N/A" },
   lastEdit: { type: Date, default: Date.now },
   ratings: { type: Number, default: 0 },
@@ -40,20 +37,20 @@ var ProductSchema = new Schema((_ref = {
   image2: { type: String, default: "noimagefound" },
   image3: { type: String, default: "noimagefound" },
   image4: { type: String, default: "noimagefound" },
-  thumbnail1: { type: String, default: "noimagefound" },
-  thumbnail2: { type: String, default: "noimagefound" },
-  thumbnail3: { type: String, default: "noimagefound" },
-  thumbnail4: { type: String, default: "noimagefound" },
   popularity: { type: Number, default: 100 },
   productAge: { type: Number, default: 0 },
   userId: { type: Schema.Types.ObjectId },
   brand: { type: String, default: "N/A" },
   rentTimeType: { type: Number, default: 0 },
-  editTime: { type: Date },
   productApproved: { type: Number, default: 0 },
   linkApproved: { type: Number, default: 0 },
-  imageApproved: { type: Number, default: 0 }
-}, _defineProperty(_ref, "category", { type: Schema.Types.ObjectId }), _defineProperty(_ref, "subCategory", { type: Schema.Types.ObjectId }), _ref));
+  imageApproved: { type: Number, default: 0 },
+  onHold: { type: Number, default: 0 },
+  subCategory: { type: Schema.Types.ObjectId },
+  subcategoryName: { type: String },
+  categoryName: { type: String }
+
+});
 
 module.exports = _mongoose2.default.model('product', ProductSchema);
 //# sourceMappingURL=product.js.map

@@ -24,6 +24,10 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _async = require('async');
+
+var _async2 = _interopRequireDefault(_async);
+
 var _express = require('express');
 
 var _user = require('../model/user');
@@ -48,7 +52,6 @@ exports.default = function (_ref) {
 
   // '/v1/user/add'
   api.post('/add', function (req, res) {
-    console.log("hello " + req.body.fname);
     var newUser = new _user2.default();
     newUser.fname = req.body.fname;
     newUser.lname = req.body.lname;
@@ -60,7 +63,7 @@ exports.default = function (_ref) {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate email
-          return res.status(500).send({ succes: false, message: 'User already exist!' });
+          return res.status(200).json({ succes: false, message: 'User already exist!' });
         }
 
         // Some other error
@@ -93,7 +96,7 @@ exports.default = function (_ref) {
         if (err) console.log(err);else console.log(info);
       });
       //sending mail ends
-      res.json({ message: 'User saved successfully' });
+      res.json({ succes: true, message: 'User saved successfully' });
     });
   });
 
@@ -182,13 +185,13 @@ exports.default = function (_ref) {
               if (login.token == req.body.token && login.userType == 3) {
                 //token matching
                 user.userType = 2;
-                user.save(function (err) {
+                user.save(function (err, changed) {
 
                   if (err) {
                     res.status(500).send(err);
                   } else {
 
-                    res.status(200).json({ message: "upgraded!" });
+                    res.status(200).json(changed);
                   }
                 });
               } else {
@@ -224,13 +227,13 @@ exports.default = function (_ref) {
               if (login.token == req.body.token && login.userType == 3) {
                 //token matching
                 user.userType = 0;
-                user.save(function (err) {
+                user.save(function (err, changed) {
 
                   if (err) {
                     res.status(500).send(err);
                   } else {
 
-                    res.status(200).json({ message: "demoted!" });
+                    res.status(200).json(changed);
                   }
                 });
               } else {
@@ -295,6 +298,169 @@ exports.default = function (_ref) {
       } else {
 
         res.send(err);
+      }
+    });
+  });
+  //we are getting user details
+  api.post('/get', function (req, res) {
+    //check password or match password
+    _user2.default.find({ email: req.body.email }, function (err, user) {
+      if (user == undefined) {
+        res.status(400).json({ message: 'User not found!' });
+      } else {
+        _login2.default.findOne({ email: req.body.email }, function (err, login) {
+
+          if (!err) {
+
+            if (login == undefined) {
+              //user not found
+
+              res.status(400).json({ message: 'User not Logged In!' });
+            } else {
+
+              if (login.token == req.body.token && login.userType == 3) {
+                //token matching
+                var sort = ["date", "fname"];
+                var sortby = "date";
+                if (sort.indexOf(req.params.sortby) > -1) {
+
+                  sortby = req.params.sortby;
+                }
+                //checking if page number is correct
+                var pageNumber = 1;
+
+                if (!isNaN(req.body.page)) {
+                  pageNumber = req.body.page;
+                }
+                //async query start here
+                console.log("query started");
+                var countQuery = function countQuery(callback) {
+                  _user2.default.find({}, function (err, doc) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, doc.length);
+                    }
+                  });
+                };
+
+                var retrieveQuery = function retrieveQuery(callback) {
+                  console.log((pageNumber - 1) * 12);
+                  _user2.default.find({}).skip((pageNumber - 1) * 12).sort({ sortby: -1 }).limit(12).exec(function (err, doc) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, doc);
+                    }
+                  });
+                };
+
+                console.log(retrieveQuery);
+                _async2.default.parallel([countQuery, retrieveQuery], function (err, results) {
+                  //err contains the array of error of all the functions
+                  //results contains an array of all the results
+                  //results[0] will contain value of doc.length from countQuery function
+                  //results[1] will contain doc of retrieveQuery function
+                  //You can send the results as
+                  if (err) {
+                    // console.log("error here");
+                    res.status(500).send(err);
+                  } else {
+                    res.status(200).json({ total_pages: Math.floor(results[0] / 12 + 1), page: pageNumber, users: results[1] });
+                  }
+                });
+              } else {
+
+                res.status(400).send({ message: "you are not authorized for moderation!" });
+              }
+            }
+          } else {
+
+            res.status(500).send(err);
+          }
+        });
+      }
+    });
+  });
+
+  //we are getting user details
+  api.post('/search', function (req, res) {
+    //check password or match password
+    _user2.default.find({ email: req.body.email }, function (err, user) {
+      if (user == undefined) {
+        res.status(400).json({ message: 'User not found!' });
+      } else {
+        _login2.default.findOne({ email: req.body.email }, function (err, login) {
+
+          if (!err) {
+
+            if (login == undefined) {
+              //user not found
+
+              res.status(400).json({ message: 'User not Logged In!' });
+            } else {
+
+              if (login.token == req.body.token && login.userType == 3) {
+                //token matching
+                var sort = ["date", "fname"];
+                var sortby = "date";
+                if (sort.indexOf(req.params.sortby) > -1) {
+
+                  sortby = req.params.sortby;
+                }
+                //checking if page number is correct
+                var pageNumber = 1;
+
+                if (!isNaN(req.body.page)) {
+                  pageNumber = req.body.page;
+                }
+                //async query start here
+                console.log("query started");
+                var countQuery = function countQuery(callback) {
+                  _user2.default.find({ 'email': { '$regex': '.*' + req.body.query + '.*', $options: 'i' } }, function (err, doc) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, doc.length);
+                    }
+                  });
+                };
+
+                var retrieveQuery = function retrieveQuery(callback) {
+                  console.log((pageNumber - 1) * 12);
+                  _user2.default.find({ 'email': { '$regex': '.*' + req.body.query + '.*', $options: 'i' } }).skip((pageNumber - 1) * 12).sort({ sortby: -1 }).limit(12).exec(function (err, doc) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, doc);
+                    }
+                  });
+                };
+
+                console.log(retrieveQuery);
+                _async2.default.parallel([countQuery, retrieveQuery], function (err, results) {
+                  //err contains the array of error of all the functions
+                  //results contains an array of all the results
+                  //results[0] will contain value of doc.length from countQuery function
+                  //results[1] will contain doc of retrieveQuery function
+                  //You can send the results as
+                  if (err) {
+                    // console.log("error here");
+                    res.status(500).send(err);
+                  } else {
+                    res.status(200).json({ total_pages: Math.floor(results[0] / 12 + 1), page: pageNumber, users: results[1] });
+                  }
+                });
+              } else {
+
+                res.status(400).send({ message: "you are not authorized for moderation!" });
+              }
+            }
+          } else {
+
+            res.status(500).send(err);
+          }
+        });
       }
     });
   });

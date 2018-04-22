@@ -60,6 +60,8 @@ var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 exports.default = function (_ref) {
     var config = _ref.config,
         db = _ref.db;
@@ -67,14 +69,14 @@ exports.default = function (_ref) {
     var api = (0, _express.Router)();
 
     // '/v1/product/add/emailID'
-    api.post('/add/:email', function (req, res) {
+    api.post('/add', function (req, res) {
         //check token
 
-        _user2.default.findOne({ email: req.params.email }, function (err, user) {
+        _user2.default.findOne({ email: req.body.email }, function (err, user) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not found!' });
             } else {
-                _login2.default.findOne({ email: req.params.email }, function (err, login) {
+                _login2.default.findOne({ email: req.body.email }, function (err, login) {
 
                     if (!err) {
 
@@ -90,13 +92,16 @@ exports.default = function (_ref) {
                                 var newProduct = new _product2.default();
                                 newProduct.productName = req.body.productName;
                                 // newproduct.image=req.body.name; saved for later
-                                newProduct.productAge = req.body.paroductAge;
-                                newProduct.ProductDescription = req.body.description;
+                                newProduct.productAge = req.body.productAge;
+                                newProduct.productDescription = req.body.description;
                                 newProduct.referenceLink = req.body.referenceLink;
                                 newProduct.college = user.college;
                                 newProduct.city = user.city;
-                                newProduct.userId = user._id, newProduct.rentPerAmount = req.body.rentPerAmount, newProduct.condition = req.body.condition, newProduct.rentTimeType = req.body.rentTimeType, newProduct.isSecurityAmount = req.body.isSecurityAmount, newProduct.securityAmount = req.body.securityAmount, newProduct.editTime = Date();
-                                newProduct.save(function (err, product) {
+                                newProduct.image1 = req.body.image1;
+                                newProduct.image2 = req.body.image2;
+                                newProduct.image3 = req.body.image3;
+                                newProduct.image4 = req.body.image4;
+                                newProduct.userId = user._id, newProduct.rentPerAmount = req.body.rentPerAmount, newProduct.condition = req.body.condition, newProduct.rentTimeType = req.body.rentTimeType, newProduct.isSecurityAmount = req.body.isSecurityAmount, newProduct.userName = req.body.userName, newProduct.securityAmount = req.body.securityAmount, newProduct.save(function (err, product) {
 
                                     if (!err) {
                                         var newNotification = new _notification2.default();
@@ -191,7 +196,11 @@ exports.default = function (_ref) {
                                                 product.isSecurityAmount = req.body.isSecurityAmount;
                                                 product.securityAmount = req.body.securityAmount;
                                                 product.productAge = req.body.productAge;
-                                                product.editTime = Date();
+                                                product.lastEdit = Date();
+                                                product.image1 = req.body.image1;
+                                                product.image2 = req.body.image2;
+                                                product.image3 = req.body.image3;
+                                                product.image4 = req.body.image4;
                                                 product.imageApproved = 0;
                                                 product.linkApproved = 0;
                                                 product.productApproved = 0;
@@ -231,13 +240,13 @@ exports.default = function (_ref) {
         });
     });
     //deleting a product
-    api.delete('/delete/:id', function (req, res) {
+    api.delete('/delete/:id/:token/:email', function (req, res) {
         //check token
-        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+        _user2.default.findOne({ email: req.params.email }, function (err, user) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not found!' });
             } else {
-                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+                _login2.default.findOne({ email: req.params.email }, function (err, login) {
 
                     if (!err) {
 
@@ -247,17 +256,16 @@ exports.default = function (_ref) {
                             res.status(400).json({ message: 'User not Logged In!' });
                         } else {
 
-                            if (login.token === req.body.token) {
+                            if (login.token === req.params.token) {
                                 //token matching
                                 _product2.default.findOne({ _id: req.params.id }, function (err, product) {
 
                                     if (!err) {
-                                        if (product === undefined) {
-
-                                            res.status(400).send({ message: "no such product exsist" });
+                                        if (product === undefined || product === null) {
+                                            console.log("I was here!!!!!!!");
+                                            res.status(404).json({ message: "no such product exsist" });
                                         } else {
-                                            console.log(user._id);
-                                            console.log(product.userId);
+
                                             if (user._id.equals(product.userId) || login.userType > 0) {
 
                                                 product.remove(function (err) {
@@ -267,7 +275,7 @@ exports.default = function (_ref) {
                                                         res.status(200).send({ message: "product deleted successsfully!" });
                                                     } else {
 
-                                                        res.status(400).send({ message: "product was not saved" });
+                                                        res.status(400).send({ message: "product was not deleted" });
                                                     }
                                                 });
                                             } else {
@@ -286,7 +294,7 @@ exports.default = function (_ref) {
                         }
                     } else {
 
-                        res.status(400).send(err);
+                        res.status(500).send(err);
                     }
                 });
             }
@@ -296,56 +304,30 @@ exports.default = function (_ref) {
     //adding a view
     api.put('/addview/:id', function (req, res) {
         //check token
-        _user2.default.findOne({ email: req.body.email }, function (err, user) {
-            if (user == undefined) {
-                res.status(400).json({ message: 'User not found!' });
-            } else {
-                _login2.default.findOne({ email: req.body.email }, function (err, login) {
 
-                    if (!err) {
+        _product2.default.findOne({ _id: req.params.id }, function (err, product) {
 
-                        if (login == undefined) {
-                            //user not found
+            if (!err) {
+                if (product === undefined) {
 
-                            res.status(400).json({ message: 'User not Logged In!' });
+                    res.status(400).send({ message: "no such product exsist" });
+                } else {
+
+                    product.pageView = product.pageView + 1;
+                    product.save(function (err) {
+
+                        if (!err) {
+
+                            res.status(200).send({ message: "increased page view" });
                         } else {
 
-                            if (login.token === req.body.token) {
-                                //token matching
-                                _product2.default.findOne({ _id: req.params.id }, function (err, product) {
-
-                                    if (!err) {
-                                        if (product === undefined) {
-
-                                            res.status(400).send({ message: "no such product exsist" });
-                                        } else {
-
-                                            product.pageView = product.pageView + 1;
-                                            product.save(function (err) {
-
-                                                if (!err) {
-
-                                                    res.status(200).send({ message: "increased page view" });
-                                                } else {
-
-                                                    res.status(400).send({ message: "some problem occured" });
-                                                }
-                                            });
-                                        }
-                                    } else {
-
-                                        res.status(400).send(err);
-                                    }
-                                });
-                            } else {
-                                res.status(400).json({ message: 'invalid token!' });
-                            }
+                            res.status(400).send({ message: "some problem occured" });
                         }
-                    } else {
+                    });
+                }
+            } else {
 
-                        res.status(400).send(err);
-                    }
-                });
+                res.status(400).send(err);
             }
         });
     });
@@ -635,7 +617,7 @@ exports.default = function (_ref) {
                                                     var newNotification = new _notification2.default();
                                                     newNotification.userId = product.userId;
                                                     newNotification.message = "Product Approved!";
-                                                    newNotification.description = req.body.description;
+                                                    newNotification.description = "Your product " + product.productName + " has been approved";
                                                     newNotification.type = 1;
                                                     newNotification.refId = product._id;
                                                     newNotification.link = "/product";
@@ -924,7 +906,7 @@ exports.default = function (_ref) {
                                             res.status(400).send({ message: "no such product exsist" });
                                         } else {
 
-                                            product.linkApproved = 2;
+                                            product.linkApproved = 0;
                                             product.save(function (err) {
 
                                                 if (!err) {
@@ -1016,7 +998,7 @@ exports.default = function (_ref) {
                                             res.status(400).send({ message: "no such product exsist" });
                                         } else {
 
-                                            product.imageApproved = 2;
+                                            product.imageApproved = 0;
                                             product.save(function (err) {
 
                                                 if (!err) {
@@ -1144,6 +1126,18 @@ exports.default = function (_ref) {
             }
         });
     });
+
+    //GET single product
+    api.get('/singleproduct/:id', function (req, res) {
+
+        _product2.default.findById({ _id: req.params.id }, function (err, prod) {
+            if (!err) {
+                res.status(200).json({ product: prod });
+            } else {
+                res.status(404).json({ message: "no product found!" });
+            }
+        });
+    });
     //GET PRODUCTS BY CATEGORY
     api.get('/productsbycategory/:token/:category/:sortby/:page', function (req, res) {
         //check token
@@ -1209,8 +1203,8 @@ exports.default = function (_ref) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not Login!' });
             } else {
-                var sort = ["date", "rating"];
-                var sortby = "date";
+                var sort = ["lastEdit", "rating"];
+                var sortby = "lastEdit";
                 if (sort.indexOf(req.params.sortby) > -1) {
 
                     sortby = req.params.sortby;
@@ -1224,6 +1218,7 @@ exports.default = function (_ref) {
                 //async query start here
 
                 var qry = JSON.parse(decodeURIComponent(req.params.query));
+                console.log(qry);
                 var countQuery = function countQuery(callback) {
                     _product2.default.find(qry, function (err, doc) {
                         if (err) {
@@ -1235,7 +1230,7 @@ exports.default = function (_ref) {
                 };
 
                 var retrieveQuery = function retrieveQuery(callback) {
-                    _product2.default.find(qry).skip((pageNumber - 1) * 12).sort({ sortby: -1 }).limit(12).exec(function (err, doc) {
+                    _product2.default.find(qry).skip((pageNumber - 1) * 12).sort(_defineProperty({}, sortby, -1)).limit(12).exec(function (err, doc) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -1302,6 +1297,184 @@ exports.default = function (_ref) {
             }
         });
     });
+
+    //assigning category
+    api.put('/assigncategory/:id', function (req, res) {
+        //check token
+        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+            if (user == undefined) {
+                res.status(400).json({ message: 'User not found!' });
+            } else {
+                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+
+                    if (!err) {
+
+                        if (login == undefined) {
+                            //user not found
+
+                            res.status(400).json({ message: 'User not Logged In!' });
+                        } else {
+
+                            if (login.token == req.body.token && user.userType > 0) {
+                                //token matching
+                                _product2.default.findOne({ _id: req.params.id }, function (err, product) {
+
+                                    if (!err) {
+                                        if (product === undefined) {
+
+                                            res.status(400).send({ message: "no such product exsist" });
+                                        } else {
+
+                                            product.category = req.body.category;
+                                            product.categoryName = req.body.name;
+                                            product.save(function (err) {
+
+                                                if (!err) {
+
+                                                    res.status(200).send({ message: "category updated" });
+                                                } else {
+
+                                                    res.status(400).send({ message: "some problem occured" });
+                                                }
+                                            });
+                                        }
+                                    } else {
+
+                                        res.status(400).send(err);
+                                    }
+                                });
+                            } else {
+                                res.status(400).json({ message: 'invalid token!' });
+                            }
+                        }
+                    } else {
+
+                        res.status(400).send(err);
+                    }
+                });
+            }
+        });
+    });
+
+    //assigning subcategory
+    api.put('/assignsubcategory/:id', function (req, res) {
+        //check token
+        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+            if (user == undefined) {
+                res.status(400).json({ message: 'User not found!' });
+            } else {
+                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+
+                    if (!err) {
+
+                        if (login == undefined) {
+                            //user not found
+
+                            res.status(400).json({ message: 'User not Logged In!' });
+                        } else {
+
+                            if (login.token == req.body.token && user.userType > 0) {
+                                //token matching
+                                _product2.default.findOne({ _id: req.params.id }, function (err, product) {
+
+                                    if (!err) {
+                                        if (product === undefined) {
+
+                                            res.status(400).send({ message: "no such product exsist" });
+                                        } else {
+
+                                            product.subcategory = req.body.subcategory;
+                                            product.subcategoryName = req.body.name;
+                                            product.save(function (err) {
+
+                                                if (!err) {
+
+                                                    res.status(200).send({ message: "subcategory updated" });
+                                                } else {
+
+                                                    res.status(400).send({ message: "some problem occured" });
+                                                }
+                                            });
+                                        }
+                                    } else {
+
+                                        res.status(400).send(err);
+                                    }
+                                });
+                            } else {
+                                res.status(400).json({ message: 'invalid token!' });
+                            }
+                        }
+                    } else {
+
+                        res.status(400).send(err);
+                    }
+                });
+            }
+        });
+    });
+
+    //approving link
+    api.put('/togglehold/:id', function (req, res) {
+        //check token
+        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+            if (user == undefined) {
+                res.status(400).json({ message: 'User not found!' });
+            } else {
+                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+
+                    if (!err) {
+
+                        if (login == undefined) {
+                            //user not found
+
+                            res.status(400).json({ message: 'User not Logged In!' });
+                        } else {
+
+                            if (login.token == req.body.token && user.userType > 0) {
+                                //token matching
+                                _product2.default.findOne({ _id: req.params.id }, function (err, product) {
+
+                                    if (!err) {
+                                        if (product === undefined) {
+
+                                            res.status(400).send({ message: "no such product exsist" });
+                                        } else {
+
+                                            if (product.onHold == 0) {
+                                                product.onHold = 1;
+                                            } else {
+                                                product.onHold = 0;
+                                            }
+                                            product.save(function (err) {
+
+                                                if (!err) {
+
+                                                    res.status(200).send({ message: "Hold toggeled" });
+                                                } else {
+
+                                                    res.status(400).send({ message: "some problem occured" });
+                                                }
+                                            });
+                                        }
+                                    } else {
+
+                                        res.status(400).send(err);
+                                    }
+                                });
+                            } else {
+                                res.status(400).json({ message: 'invalid token!' });
+                            }
+                        }
+                    } else {
+
+                        res.status(400).send(err);
+                    }
+                });
+            }
+        });
+    });
+
     return api;
 };
 //# sourceMappingURL=product.js.map

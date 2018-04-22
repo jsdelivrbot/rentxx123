@@ -22,6 +22,10 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _jsonwebtoken = require('jsonwebtoken');
+
+var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function (_ref) {
@@ -62,12 +66,19 @@ exports.default = function (_ref) {
 
                                                 res.status(500).send(err);
                                             }
+                                            var a = user.toJSON();
+                                            a.token = loginDetailsAfterSaving.token;
 
-                                            res.status(200).json({ token: loginDetailsAfterSaving.token, userdetails: user });
+                                            var token = _jsonwebtoken2.default.sign(a, "example1");
+                                            res.status(200).json({ token: token });
                                         });
                                     } else {
                                         //user is already logged in
-                                        res.status(200).json({ token: loginDetails.token });
+                                        var a = user.toJSON();
+                                        a.token = loginDetails.token;
+
+                                        var token = _jsonwebtoken2.default.sign(a, "example1");
+                                        res.status(200).json({ token: token });
                                     }
                                 } else {
 
@@ -85,13 +96,13 @@ exports.default = function (_ref) {
         });
     });
     //logging out a user
-    api.delete('/logout/:email', function (req, res) {
+    api.delete('/logout/:email/:token', function (req, res) {
         _login2.default.findOne({ email: req.params.email }, function (err, login) {
             if (!err) {
                 if (login === null) {
                     res.status(400).json({ message: 'User not found!' });
                 } else {
-                    if (login.token === req.body.token) {
+                    if (login.token === req.params.token) {
                         login.remove(function (err) {
                             if (err) {
 

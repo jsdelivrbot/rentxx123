@@ -30,6 +30,10 @@ var _nodemailer = require('nodemailer');
 
 var _nodemailer2 = _interopRequireDefault(_nodemailer);
 
+var _async = require('async');
+
+var _async2 = _interopRequireDefault(_async);
+
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -48,6 +52,8 @@ var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 exports.default = function (_ref) {
     var config = _ref.config,
         db = _ref.db;
@@ -55,13 +61,13 @@ exports.default = function (_ref) {
     var api = (0, _express.Router)();
 
     // '/v1/bid/add/emailID'
-    api.post('/add/:email', function (req, res) {
+    api.post('/add', function (req, res) {
         //check token match token
-        _user2.default.findOne({ email: req.params.email }, function (err, user) {
+        _user2.default.findOne({ email: req.body.email }, function (err, user) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not found!' });
             } else {
-                _login2.default.findOne({ email: req.params.email }, function (err, login) {
+                _login2.default.findOne({ email: req.body.email }, function (err, login) {
 
                     if (!err) {
 
@@ -87,6 +93,9 @@ exports.default = function (_ref) {
                                             newBid.productId = req.body.productId;
                                             newBid.userId = user._id;
                                             newBid.description = req.body.description;
+                                            newBid.userName = req.body.userName;
+                                            newBid.productName = req.body.productName;
+                                            newBid.productById = product.userId;
                                             newBid.save(function (err, bid) {
 
                                                 if (!err) {
@@ -344,6 +353,60 @@ exports.default = function (_ref) {
                     } else {
 
                         res.status(400).send(err);
+                    }
+                });
+            }
+        });
+    });
+
+    //GET BIDS BY DYNAMIC QUERY
+    api.get('/dynamic/:token/:query/:sortby/:page', function (req, res) {
+        //check token
+        _login2.default.findOne({ token: req.params.token }, function (err, user) {
+            if (user == undefined) {
+                res.status(400).json({ message: 'User not Login!' });
+            } else {
+                var sort = ["lastEdit", "rating"];
+                var sortby = "lastEdit";
+                if (sort.indexOf(req.params.sortby) > -1) {
+
+                    sortby = req.params.sortby;
+                }
+                //checking if page number is correct
+                var pageNumber = 1;
+
+                if (!isNaN(req.params.page)) {
+                    pageNumber = req.params.page;
+                }
+                //async query start here
+
+                var qry = JSON.parse(decodeURIComponent(req.params.query));
+                var countQuery = function countQuery(callback) {
+                    _bid2.default.find(qry, function (err, doc) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, doc.length);
+                        }
+                    });
+                };
+
+                var retrieveQuery = function retrieveQuery(callback) {
+                    _bid2.default.find(qry).skip((pageNumber - 1) * 12).sort(_defineProperty({}, sortby, -1)).limit(12).exec(function (err, doc) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, doc);
+                        }
+                    });
+                };
+
+                _async2.default.parallel([countQuery, retrieveQuery], function (err, results) {
+                    if (err) {
+                        // console.log("error here");
+                        res.status(500).send(err);
+                    } else {
+                        res.status(200).json({ total_pages: Math.floor(results[0] / 12 + 1), page: pageNumber, bids: results[1] });
                     }
                 });
             }

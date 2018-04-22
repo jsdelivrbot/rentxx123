@@ -22,9 +22,9 @@ var _product = require('../model/product');
 
 var _product2 = _interopRequireDefault(_product);
 
-var _college = require('../model/college');
+var _reasons = require('../model/reasons');
 
-var _college2 = _interopRequireDefault(_college);
+var _reasons2 = _interopRequireDefault(_reasons);
 
 var _bodyParser = require('body-parser');
 
@@ -37,8 +37,8 @@ exports.default = function (_ref) {
         db = _ref.db;
 
     var api = (0, _express.Router)();
-    //adding a college
-    //v1/college/add
+    //adding a reasons
+    //v1/reasons/add
     api.post('/add', function (req, res) {
         //check password or match password
         _user2.default.findOne({ email: req.body.email }, function (err, user) {
@@ -57,14 +57,13 @@ exports.default = function (_ref) {
 
                             if (login.token == req.body.token && user.userType > 0) {
                                 //token matching and only admin can add
-                                var newcollege = new _college2.default();
-                                newcollege.name = req.body.name;
-                                newcollege.city = req.body.city;
-                                newcollege.save(function (err, college) {
+                                var newreasons = new _reasons2.default();
+                                newreasons.name = req.body.name;
+                                newreasons.save(function (err, reasons) {
 
                                     if (!err) {
 
-                                        res.status(200).send(college);
+                                        res.status(200).send(reasons);
                                     } else {
                                         res.status(500).send(err);
                                     }
@@ -82,7 +81,7 @@ exports.default = function (_ref) {
         });
     });
 
-    //v1/college/update
+    //v1/reasons/update
     api.put('/update/:id', function (req, res) {
         //check password or match password
         _user2.default.findOne({ email: req.body.email }, function (err, user) {
@@ -103,22 +102,21 @@ exports.default = function (_ref) {
                                 //token matching and only admin can add
 
 
-                                _college2.default.findById(req.params.id, function (err, college) {
+                                _reasons2.default.findById(req.params.id, function (err, reasons) {
 
                                     if (!err) {
-                                        if (college === undefined) {
-                                            res.status(400).send({ message: "no such college exsist!" });
+                                        if (reasons === undefined) {
+                                            res.status(400).send({ message: "no such reasons exsist!" });
                                         } else {
-                                            college.name = req.body.name;
-                                            college.city = req.body.city;
-                                            college.save(function (err) {
+                                            reasons.name = req.body.name;
+                                            reasons.save(function (err) {
 
                                                 if (err) {
 
                                                     res.status(500).send(err);
                                                 } else {
 
-                                                    res.status(200).send({ message: "college updated!" });
+                                                    res.status(200).send({ message: "reasons updated!" });
                                                 }
                                             });
                                         }
@@ -140,7 +138,7 @@ exports.default = function (_ref) {
         });
     });
 
-    //v1/college/update
+    //v1/reasons/delete
     api.delete('/delete/:id/:token/:email', function (req, res) {
         //check password or match password
         _user2.default.findOne({ email: req.params.email }, function (err, user) {
@@ -161,17 +159,17 @@ exports.default = function (_ref) {
                                 //token matching and only admin can add
 
 
-                                _college2.default.findById(req.params.id, function (err, college) {
+                                _reasons2.default.findById(req.params.id, function (err, reasons) {
 
                                     if (!err) {
-                                        if (college === undefined) {
-                                            res.status(400).send({ message: "no such college exsist!" });
+                                        if (reasons === undefined) {
+                                            res.status(400).send({ message: "no such reasons exsist!" });
                                         } else {
-                                            college.remove(function (err) {
+                                            reasons.remove(function (err) {
 
                                                 if (!err) {
 
-                                                    res.status(200).send({ message: "college deleted!" });
+                                                    res.status(200).send({ message: "reasons deleted!" });
                                                 } else {
 
                                                     res.status(500).send(err);
@@ -196,12 +194,12 @@ exports.default = function (_ref) {
         });
     });
 
-    //get college here
+    //get reasons here
     api.post('/get', function (req, res) {
-        _college2.default.find({ city: req.body.cityId }, function (err, colleges) {
-            res.json({ "college": colleges });
+        _reasons2.default.find({}, function (err, reasons) {
+            res.json({ "cities": reasons });
         });
     });
     return api;
 };
-//# sourceMappingURL=college.js.map
+//# sourceMappingURL=reasons.js.map

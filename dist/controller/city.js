@@ -59,11 +59,11 @@ exports.default = function (_ref) {
                                 //token matching and only admin can add
                                 var newcity = new _city2.default();
                                 newcity.name = req.body.name;
-                                newcity.save(function (err) {
+                                newcity.save(function (err, city) {
 
                                     if (!err) {
 
-                                        res.status(200).send({ message: "city added!" });
+                                        res.status(200).send(city);
                                     } else {
                                         res.status(500).send(err);
                                     }
@@ -138,14 +138,14 @@ exports.default = function (_ref) {
         });
     });
 
-    //v1/city/update
-    api.delete('/delete/:id', function (req, res) {
+    //v1/city/delete
+    api.delete('/delete/:id/:token/:email', function (req, res) {
         //check password or match password
-        _user2.default.findOne({ email: req.body.email }, function (err, user) {
+        _user2.default.findOne({ email: req.params.email }, function (err, user) {
             if (user == undefined) {
                 res.status(400).json({ message: 'User not found!' });
             } else {
-                _login2.default.findOne({ email: req.body.email }, function (err, login) {
+                _login2.default.findOne({ email: req.params.email }, function (err, login) {
 
                     if (!err) {
 
@@ -155,7 +155,7 @@ exports.default = function (_ref) {
                             res.status(400).json({ message: 'User not Logged In!' });
                         } else {
 
-                            if (login.token == req.body.token && user.userType > 0) {
+                            if (login.token == req.params.token && user.userType > 0) {
                                 //token matching and only admin can add
 
 
@@ -191,6 +191,13 @@ exports.default = function (_ref) {
                     }
                 });
             }
+        });
+    });
+
+    //get cities here
+    api.post('/get', function (req, res) {
+        _city2.default.find({}, function (err, cities) {
+            res.json({ "cities": cities });
         });
     });
     return api;
